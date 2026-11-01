@@ -11,6 +11,7 @@ java {
 
 dependencies {
     compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.kotlin.gradlePlugin)
 }
 
 tasks {
@@ -33,6 +34,10 @@ gradlePlugin {
         register("androidCompose") {
             id = libs.plugins.zee.android.compose.get().pluginId
             implementationClass = "AndroidComposeConventionPlugin"
+        }
+        register("jvmLibrary") {
+            id = libs.plugins.zee.jvm.library.get().pluginId
+            implementationClass = "JvmLibraryConventionPlugin"
         }
     }
 }

@@ -24,5 +24,15 @@ dependencyResolutionManagement {
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "ZeeLauncher"
+
 include(":app")
+
+include(":core-common")
+include(":core-data")
+include(":core-database")
+include(":core-datastore")
 include(":core-designsystem")
+include(":core-input")
+include(":core-launch")
+include(":core-model")
+include(":core-scanner")

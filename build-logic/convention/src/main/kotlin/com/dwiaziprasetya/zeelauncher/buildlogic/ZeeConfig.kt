@@ -2,7 +2,6 @@ package com.dwiaziprasetya.zeelauncher.buildlogic
 
 import org.gradle.api.JavaVersion
 
-
 object ZeeConfig {
     const val COMPILE_SDK = 36
     const val MIN_SDK = 30
