@@ -1,4 +1,4 @@
-package com.dwiaziprasetya.zeelauncher.ui.theme
+package com.zeelauncher.core_designsystem.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

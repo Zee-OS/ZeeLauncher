@@ -1,4 +1,4 @@
-package com.dwiaziprasetya.zeelauncher.ui.theme
+package com.zeelauncher.core_designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -25,3 +25,4 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "ZeeLauncher"
 include(":app")
+include(":core-designsystem")
