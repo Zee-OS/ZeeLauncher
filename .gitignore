@@ -1,7 +1,6 @@
 # Gradle
 .gradle/
 build/
-**/build/
 
 # Android Studio
 .idea/
@@ -13,3 +12,11 @@ local.properties
 # OS files
 .DS_Store
 Thumbs.db
+
+# Kotlin 2.x
+.kotlin/
+
+# Signing
+*.jks
+*.keystore
+keystore.properties
