@@ -1,0 +1,27 @@
+<resources>
+    <string name="home_tab_library">LIBRARY</string>
+    <string name="home_tab_apps">APPS</string>
+    <string name="home_tab_settings">SETTINGS</string>
+    <string name="home_coming_soon">%1$s COMING SOON</string>
+
+    <string name="home_game_meta">"%1$s  /  ANDROID"</string>
+    <string name="home_play">PLAY</string>
+    <string name="home_app_info">APP INFO</string>
+
+    <string name="home_import_title">IMPORT GAME</string>
+    <string name="home_import_subtitle">Pick from your installed apps</string>
+    <string name="home_import_meta">PICK FROM YOUR INSTALLED APPS</string>
+
+    <string name="home_empty_title">NO GAMES YET</string>
+    <string name="home_empty_meta">ADD YOUR FIRST GAME TO START</string>
+
+    <string name="home_hint_launch">LAUNCH</string>
+    <string name="home_hint_back">BACK</string>
+    <string name="home_hint_search">SEARCH</string>
+    <string name="home_hint_import">IMPORT</string>
+
+    <string name="home_toast_launch">Launch %1$s</string>
+    <string name="home_toast_app_info">App info %1$s</string>
+    <string name="home_toast_import">Open import</string>
+    <string name="home_toast_search">Search</string>
+</resources>

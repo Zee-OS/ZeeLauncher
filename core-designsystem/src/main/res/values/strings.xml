@@ -1,0 +1,11 @@
+<resources>
+    <string name="zee_logo_prefix" translatable="false">Zee</string>
+    <string name="zee_logo_suffix" translatable="false">Launcher</string>
+    <string name="zee_key_l1" translatable="false">L1</string>
+    <string name="zee_key_r1" translatable="false">R1</string>
+    <string name="zee_key_a" translatable="false">A</string>
+    <string name="zee_key_b" translatable="false">B</string>
+    <string name="zee_key_x" translatable="false">X</string>
+    <string name="zee_key_y" translatable="false">Y</string>
+    <string name="zee_battery_percent" translatable="false">%1$d%%</string>
+</resources>

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.zee.android.library)
-    alias(libs.plugins.zee.android.compose)
 }
 
 android {
@@ -8,5 +7,5 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.compose.ui)
+    api(libs.kotlinx.coroutines.core)
 }

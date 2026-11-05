@@ -1,34 +1,48 @@
 package com.zeelauncher.core_designsystem.theme
 
-import androidx.compose.material3.Typography
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import com.zeelauncher.core_designsystem.R
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+val Rajdhani = FontFamily(
+    Font(R.font.rajdhani_medium, FontWeight.Medium),
+    Font(R.font.rajdhani_semibold, FontWeight.SemiBold),
+    Font(R.font.rajdhani_bold, FontWeight.Bold),
 )
+
+@Immutable
+data class ZeeTypography(
+    val display: TextStyle,
+    val logo: TextStyle,
+    val headline: TextStyle,
+    val button: TextStyle,
+    val buttonSmall: TextStyle,
+    val status: TextStyle,
+    val body: TextStyle,
+    val label: TextStyle,
+    val hint: TextStyle,
+    val cardLabel: TextStyle,
+    val badge: TextStyle,
+)
+
+private val Base = TextStyle(fontFamily = Rajdhani)
+
+val ZeeDefaultTypography = ZeeTypography(
+    display = Base.copy(fontSize = TextDimen.Sp34, fontWeight = FontWeight.Bold, lineHeight = TextDimen.Em1_1),
+    logo = Base.copy(fontSize = TextDimen.Sp28, fontWeight = FontWeight.Bold),
+    headline = Base.copy(fontSize = TextDimen.Sp26, fontWeight = FontWeight.Bold, letterSpacing = TextDimen.Em0_1),
+    button = Base.copy(fontSize = TextDimen.Sp18, fontWeight = FontWeight.Bold, letterSpacing = TextDimen.Em0_12),
+    buttonSmall = Base.copy(fontSize = TextDimen.Sp16, fontWeight = FontWeight.Bold, letterSpacing = TextDimen.Em0_04),
+    status = Base.copy(fontSize = TextDimen.Sp18, fontWeight = FontWeight.Bold, letterSpacing = TextDimen.Em0_04),
+    body = Base.copy(fontSize = TextDimen.Sp17, fontWeight = FontWeight.Medium),
+    label = Base.copy(fontSize = TextDimen.Sp16, fontWeight = FontWeight.SemiBold, letterSpacing = TextDimen.Em0_12),
+    hint = Base.copy(fontSize = TextDimen.Sp16, fontWeight = FontWeight.SemiBold, letterSpacing = TextDimen.Em0_04),
+    cardLabel = Base.copy(fontSize = TextDimen.Sp16, fontWeight = FontWeight.Bold, letterSpacing = TextDimen.Em0_1),
+    badge = Base.copy(fontSize = TextDimen.Sp15, fontWeight = FontWeight.Bold),
+)
+
+val LocalZeeTypography = staticCompositionLocalOf { ZeeDefaultTypography }

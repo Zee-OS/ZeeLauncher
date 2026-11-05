@@ -36,3 +36,5 @@ include(":core-input")
 include(":core-launch")
 include(":core-model")
 include(":core-scanner")
+
+include(":feature-home")
