@@ -7,12 +7,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.zeelauncher.core_common.constant.ONE
+import com.zeelauncher.core_designsystem.R
 import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 
 @Immutable
 data class ZeeButtonHint(val key: String, val label: String)
+
+@Composable
+fun zeeBackHint(): ZeeButtonHint = ZeeButtonHint(
+    key = stringResource(R.string.zee_key_b),
+    label = stringResource(R.string.zee_hint_back),
+)
 
 @Composable
 fun ZeeHintRow(

@@ -1,0 +1,21 @@
+<resources>
+    <string name="library_game_meta">"%1$s  /  ANDROID"</string>
+    <string name="library_play">PLAY</string>
+    <string name="library_app_info">APP INFO</string>
+
+    <string name="library_import_title">IMPORT GAME</string>
+    <string name="library_import_subtitle">Pick from your installed apps</string>
+    <string name="library_import_meta">PICK FROM YOUR INSTALLED APPS</string>
+
+    <string name="library_empty_title">NO GAMES YET</string>
+    <string name="library_empty_meta">ADD YOUR FIRST GAME TO START</string>
+
+    <string name="library_hint_launch">LAUNCH</string>
+    <string name="library_hint_search">SEARCH</string>
+    <string name="library_hint_import">IMPORT</string>
+
+    <string name="library_toast_launch">Launch %1$s</string>
+    <string name="library_toast_app_info">App info %1$s</string>
+    <string name="library_toast_import">Open import</string>
+    <string name="library_toast_search">Search</string>
+</resources>

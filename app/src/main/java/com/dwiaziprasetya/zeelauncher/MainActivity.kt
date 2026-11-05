@@ -1,18 +1,19 @@
 package com.dwiaziprasetya.zeelauncher
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.dwiaziprasetya.zeelauncher.navigation.ZeeRootNavHost
 import com.zeelauncher.core_designsystem.layout.ZeeCanvas
 import com.zeelauncher.core_designsystem.theme.ZeeLauncherTheme
+import com.zeelauncher.core_input.LocalZeeInput
 import com.zeelauncher.core_input.ZeeInputDispatcher
-import com.zeelauncher.feature_home.screen.HomeRoute
 
 class MainActivity : ComponentActivity() {
 
@@ -23,15 +24,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         hideSystemBars()
         setContent {
-            ZeeLauncherTheme {
-                ZeeCanvas {
-                    HomeRoute(actions = input.actions)
+            CompositionLocalProvider(LocalZeeInput provides input) {
+                ZeeLauncherTheme {
+                    ZeeCanvas {
+                        ZeeRootNavHost()
+                    }
                 }
             }
         }
     }
 
-    @SuppressLint("RestrictedApi")
     override fun dispatchKeyEvent(event: KeyEvent): Boolean =
         input.dispatch(event) || super.dispatchKeyEvent(event)
 

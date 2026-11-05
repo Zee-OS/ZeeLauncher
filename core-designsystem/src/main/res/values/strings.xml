@@ -8,4 +8,5 @@
     <string name="zee_key_x" translatable="false">X</string>
     <string name="zee_key_y" translatable="false">Y</string>
     <string name="zee_battery_percent" translatable="false">%1$d%%</string>
+    <string name="zee_hint_back">BACK</string>
 </resources>

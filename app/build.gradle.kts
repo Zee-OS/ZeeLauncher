@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.zee.android.application)
     alias(libs.plugins.zee.android.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -14,9 +15,13 @@ android {
 }
 
 dependencies {
+    implementation(projects.coreCommon)
     implementation(projects.coreDesignsystem)
     implementation(projects.coreInput)
-    implementation(projects.featureHome)
+    implementation(projects.coreNavigation)
+    implementation(projects.featureLibrary)
+    implementation(projects.featureApps)
+    implementation(projects.featureSettings)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

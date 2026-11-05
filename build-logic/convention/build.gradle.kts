@@ -39,5 +39,9 @@ gradlePlugin {
             id = libs.plugins.zee.jvm.library.get().pluginId
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("androidFeature") {
+            id = libs.plugins.zee.android.feature.get().pluginId
+            implementationClass = "AndroidFeatureConventionPlugin"
+        }
     }
 }

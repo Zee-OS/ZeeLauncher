@@ -1,0 +1,5 @@
+<resources>
+    <string name="main_tab_library">LIBRARY</string>
+    <string name="main_tab_apps">APPS</string>
+    <string name="main_tab_settings">SETTINGS</string>
+</resources>
