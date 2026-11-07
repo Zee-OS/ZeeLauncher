@@ -20,9 +20,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.lerp
 import coil3.compose.AsyncImage
 import com.zeelauncher.core_common.constant.ONE
-import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_designsystem.component.ZeeFocusFrame
 import com.zeelauncher.core_designsystem.icon.ZeePlusIcon
+import com.zeelauncher.core_designsystem.modifier.revealHeight
 import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.TextDimen
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
@@ -81,17 +81,17 @@ internal fun ImportCard(
                 maxLines = ONE,
                 softWrap = false,
             )
-            if (focus > ZERO_FLOAT) {
-                Spacer(Modifier.height(lerp(Dimen.Dp0, Dimen.Dp16, focus)))
-                Text(
-                    text = stringResource(R.string.library_import_subtitle),
-                    style = typography.body,
-                    color = ZeeTheme.colors.contentSecondary,
-                    maxLines = ONE,
-                    softWrap = false,
-                    modifier = Modifier.alpha(focus),
-                )
-            }
+            Spacer(Modifier.height(lerp(Dimen.Dp0, Dimen.Dp16, focus)))
+            Text(
+                text = stringResource(R.string.library_import_subtitle),
+                style = typography.body,
+                color = ZeeTheme.colors.contentSecondary,
+                maxLines = ONE,
+                softWrap = false,
+                modifier = Modifier
+                    .revealHeight(focus)
+                    .alpha(focus),
+            )
         }
     }
 }

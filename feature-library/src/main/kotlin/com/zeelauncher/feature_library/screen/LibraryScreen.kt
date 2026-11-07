@@ -3,12 +3,7 @@ package com.zeelauncher.feature_library.screen
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zeelauncher.core_common.constant.ONE_FLOAT
+import com.zeelauncher.core_designsystem.motion.ZeeMotion
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_input.ObserveZeeActions
 import com.zeelauncher.feature_library.R
@@ -32,9 +28,7 @@ import com.zeelauncher.feature_library.viewmodel.LibraryEffect
 import com.zeelauncher.feature_library.viewmodel.LibraryUiState
 import com.zeelauncher.feature_library.viewmodel.LibraryViewModel
 
-private const val CAROUSEL_ANIMATION_MILLIS = 260
 private const val CAROUSEL_ANIMATION_LABEL = "carousel"
-private const val LIBRARY_CHANGE_MILLIS = 220
 private const val LIBRARY_CHANGE_LABEL = "library_change"
 
 @Composable
@@ -76,9 +70,7 @@ internal fun LibraryScreen(
     AnimatedContent(
         targetState = uiState,
         contentKey = { it.contentKey },
-        transitionSpec = {
-            fadeIn(tween(LIBRARY_CHANGE_MILLIS)) togetherWith fadeOut(tween(LIBRARY_CHANGE_MILLIS))
-        },
+        transitionSpec = { ZeeMotion.crossfade() },
         label = LIBRARY_CHANGE_LABEL,
         modifier = modifier.fillMaxSize(),
     ) { state ->
@@ -104,10 +96,7 @@ private fun LibraryContent(
 ) {
     val position by animateFloatAsState(
         targetValue = uiState.selectedIndex.toFloat(),
-        animationSpec = tween(
-            durationMillis = CAROUSEL_ANIMATION_MILLIS,
-            easing = FastOutSlowInEasing,
-        ),
+        animationSpec = ZeeMotion.spec(),
         label = CAROUSEL_ANIMATION_LABEL,
     )
     Column(Modifier.fillMaxSize()) {
