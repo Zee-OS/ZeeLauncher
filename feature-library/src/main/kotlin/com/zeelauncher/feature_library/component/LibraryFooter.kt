@@ -21,6 +21,7 @@ import com.zeelauncher.core_designsystem.component.ZeeHintRow
 import com.zeelauncher.core_designsystem.component.zeeBackHint
 import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
+import com.zeelauncher.core_model.game.GamePlatform
 import com.zeelauncher.feature_library.R
 import com.zeelauncher.feature_library.viewmodel.LibraryItem
 import com.zeelauncher.core_designsystem.R as DesignR
@@ -39,10 +40,10 @@ internal fun LibraryFooter(
     ) {
         Column(Modifier.weight(ONE_FLOAT)) {
             when {
-                item is LibraryItem.Game -> {
+                item is LibraryItem.GameItem -> {
                     FooterInfo(
-                        title = item.game.title.uppercase(),
-                        meta = stringResource(R.string.library_game_meta, item.game.genre),
+                        title = item.game.label.uppercase(),
+                        meta = stringResource(item.game.platform.labelRes()),
                     )
                     Spacer(Modifier.height(Dimen.Dp14))
                     Row(horizontalArrangement = Arrangement.spacedBy(Dimen.Dp14)) {
@@ -67,22 +68,23 @@ internal fun LibraryFooter(
                 )
             }
         }
-        ZeeHintRow(if (item is LibraryItem.Game) gameHints() else importHints())
+        ZeeHintRow(
+            listOf(
+                ZeeButtonHint(
+                    key = stringResource(DesignR.string.zee_key_a),
+                    label = stringResource(
+                        if (item is LibraryItem.GameItem) R.string.library_hint_launch else R.string.library_hint_import,
+                    ),
+                ),
+                zeeBackHint(),
+            ),
+        )
     }
 }
 
-@Composable
-private fun gameHints(): List<ZeeButtonHint> = listOf(
-    ZeeButtonHint(stringResource(DesignR.string.zee_key_a), stringResource(R.string.library_hint_launch)),
-    zeeBackHint(),
-    ZeeButtonHint(stringResource(DesignR.string.zee_key_y), stringResource(R.string.library_hint_search)),
-)
-
-@Composable
-private fun importHints(): List<ZeeButtonHint> = listOf(
-    ZeeButtonHint(stringResource(DesignR.string.zee_key_a), stringResource(R.string.library_hint_import)),
-    zeeBackHint(),
-)
+private fun GamePlatform.labelRes(): Int = when (this) {
+    GamePlatform.Android -> R.string.library_platform_android
+}
 
 @Composable
 private fun FooterInfo(title: String, meta: String) {

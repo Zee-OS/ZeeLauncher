@@ -13,6 +13,7 @@ import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_designsystem.modifier.noRippleClickable
 import com.zeelauncher.core_designsystem.theme.Dimen
+import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.feature_library.viewmodel.LibraryItem
 import kotlin.math.abs
 import kotlin.math.floor
@@ -36,8 +37,8 @@ internal fun GameCarousel(
                 val focus = focusOf(index, position)
                 val clickModifier = Modifier.noRippleClickable { onCardClick(index) }
                 when (item) {
-                    is LibraryItem.Game -> GameCard(item.game, focus, clickModifier)
-                    LibraryItem.Import -> ImportCard(focus, clickModifier)
+                    is LibraryItem.GameItem -> GameCard(item.game, focus, clickModifier)
+                    LibraryItem.ImportItem -> ImportCard(focus, clickModifier)
                 }
             }
         },
@@ -56,11 +57,17 @@ internal fun GameCarousel(
             centers[index] = cursor + side / TWO_FLOAT
             cursor += side + gap
         }
-        val lower = floor(position).toInt().coerceIn(ZERO, sizes.lastIndex)
-        val upper = (lower + ONE).coerceAtMost(sizes.lastIndex)
-        val fraction = position - lower
-        val anchor = centers[lower] + (centers[upper] - centers[lower]) * fraction
-        val shift = constraints.maxWidth / TWO_FLOAT - anchor
+        val rowWidth = cursor - gap
+        val availableWidth = constraints.maxWidth - ZeeDimens.ScreenPaddingHorizontal.toPx() * TWO_FLOAT
+        val shift = if (rowWidth <= availableWidth) {
+            (constraints.maxWidth - rowWidth) / TWO_FLOAT
+        } else {
+            val lower = floor(position).toInt().coerceIn(ZERO, sizes.lastIndex)
+            val upper = (lower + ONE).coerceAtMost(sizes.lastIndex)
+            val fraction = position - lower
+            val anchor = centers[lower] + (centers[upper] - centers[lower]) * fraction
+            constraints.maxWidth / TWO_FLOAT - anchor
+        }
         layout(constraints.maxWidth, constraints.maxHeight) {
             placeables.forEachIndexed { index, placeable ->
                 placeable.place(

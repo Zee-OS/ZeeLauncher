@@ -1,46 +1,67 @@
 package com.zeelauncher.feature_library.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.zeelauncher.core_common.constant.MINUS_ONE
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ZERO
+import com.zeelauncher.core_data.usecase.LaunchGameUseCase
+import com.zeelauncher.core_data.usecase.ObserveLibraryUseCase
+import com.zeelauncher.core_data.usecase.OpenAppInfoUseCase
 import com.zeelauncher.core_input.ZeeAction
+import com.zeelauncher.core_model.game.Game
+import com.zeelauncher.core_model.launch.LaunchResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val EFFECT_BUFFER_CAPACITY = 8
 
-class LibraryViewModel : ViewModel() {
+@HiltViewModel
+class LibraryViewModel @Inject constructor(
+    observeLibraryUseCase: ObserveLibraryUseCase,
+    private val launchGameUseCase: LaunchGameUseCase,
+    private val openAppInfoUseCase: OpenAppInfoUseCase,
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(initialState())
+    private val _uiState = MutableStateFlow(LibraryUiState())
     val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
 
     private val _effects = MutableSharedFlow<LibraryEffect>(extraBufferCapacity = EFFECT_BUFFER_CAPACITY)
     val effects: SharedFlow<LibraryEffect> = _effects.asSharedFlow()
 
-    fun onAction(action: ZeeAction): Boolean = when (action) {
-        ZeeAction.Left -> {
-            moveSelection(MINUS_ONE)
-            true
+    init {
+        observeLibraryUseCase()
+            .onEach { games -> _uiState.update { it.withGames(games) } }
+            .launchIn(viewModelScope)
+    }
+
+    fun onAction(action: ZeeAction): Boolean {
+        if (_uiState.value.isLoading) return false
+        return when (action) {
+            ZeeAction.Left -> {
+                moveSelection(MINUS_ONE)
+                true
+            }
+            ZeeAction.Right -> {
+                moveSelection(ONE)
+                true
+            }
+            ZeeAction.Confirm -> {
+                confirm()
+                true
+            }
+            ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back, ZeeAction.Search -> false
         }
-        ZeeAction.Right -> {
-            moveSelection(ONE)
-            true
-        }
-        ZeeAction.Confirm -> {
-            confirm()
-            true
-        }
-        ZeeAction.Search -> {
-            _effects.tryEmit(LibraryEffect.Search)
-            true
-        }
-        ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back -> false
     }
 
     fun onCardClick(index: Int) {
@@ -51,17 +72,20 @@ class LibraryViewModel : ViewModel() {
         }
     }
 
-    fun onAppInfoClick() {
-        val item = _uiState.value.selectedItem
-        if (item is LibraryItem.Game) _effects.tryEmit(LibraryEffect.AppInfo(item.game.title))
+    fun confirm() {
+        when (val item = _uiState.value.selectedItem) {
+            is LibraryItem.GameItem -> viewModelScope.launch {
+                val result = launchGameUseCase(item.game)
+                if (result == LaunchResult.AppNotFound) _effects.emit(LibraryEffect.GameNotFound)
+            }
+            LibraryItem.ImportItem -> _effects.tryEmit(LibraryEffect.OpenImport)
+        }
     }
 
-    fun confirm() {
-        val effect = when (val item = _uiState.value.selectedItem) {
-            is LibraryItem.Game -> LibraryEffect.Launch(item.game.title)
-            LibraryItem.Import -> LibraryEffect.OpenImport
-        }
-        _effects.tryEmit(effect)
+    fun onAppInfoClick() {
+        val item = _uiState.value.selectedItem as? LibraryItem.GameItem ?: return
+        val result = openAppInfoUseCase(item.game.packageName, item.game.activityName)
+        if (result == LaunchResult.AppNotFound) _effects.tryEmit(LibraryEffect.GameNotFound)
     }
 
     private fun moveSelection(delta: Int) {
@@ -70,11 +94,20 @@ class LibraryViewModel : ViewModel() {
         }
     }
 
-    private fun initialState(): LibraryUiState {
-        val items = demoGames().map { LibraryItem.Game(it) } + LibraryItem.Import
-        val selected = items.indexOfFirst {
-            it is LibraryItem.Game && it.game == DefaultSelectedGame
+    private fun LibraryUiState.withGames(games: List<Game>): LibraryUiState {
+        val newItems = games.map { LibraryItem.GameItem(it) } + LibraryItem.ImportItem
+        val newIndex = if (isLoading) lastPlayedIndex(games) else retainedIndex(newItems)
+        return copy(isLoading = false, items = newItems, selectedIndex = newIndex)
+    }
+
+    private fun lastPlayedIndex(games: List<Game>): Int =
+        games.indices.maxByOrNull { games[it].lastPlayedAt ?: Long.MIN_VALUE } ?: ZERO
+
+    private fun LibraryUiState.retainedIndex(newItems: List<LibraryItem>): Int {
+        val previous = selectedItem as? LibraryItem.GameItem ?: return newItems.lastIndex
+        val index = newItems.indexOfFirst {
+            it is LibraryItem.GameItem && it.game.packageName == previous.game.packageName
         }
-        return LibraryUiState(items = items, selectedIndex = selected.coerceAtLeast(ZERO))
+        return if (index != MINUS_ONE) index else selectedIndex.coerceIn(ZERO, newItems.lastIndex)
     }
 }

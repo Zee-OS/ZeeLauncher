@@ -1,25 +1,19 @@
 package com.zeelauncher.feature_library.viewmodel
 
-import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Immutable
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ZERO
-
-@Immutable
-data class LibraryGame(
-    val title: String,
-    val genre: String,
-    @param:DrawableRes val cover: Int?,
-)
+import com.zeelauncher.core_model.game.Game
 
 sealed interface LibraryItem {
-    data class Game(val game: LibraryGame) : LibraryItem
-    data object Import : LibraryItem
+    data class GameItem(val game: Game) : LibraryItem
+    data object ImportItem : LibraryItem
 }
 
 @Immutable
 data class LibraryUiState(
-    val items: List<LibraryItem> = listOf(LibraryItem.Import),
+    val isLoading: Boolean = true,
+    val items: List<LibraryItem> = listOf(LibraryItem.ImportItem),
     val selectedIndex: Int = ZERO,
 ) {
     val selectedItem: LibraryItem get() = items[selectedIndex]
@@ -27,8 +21,6 @@ data class LibraryUiState(
 }
 
 sealed interface LibraryEffect {
-    data class Launch(val title: String) : LibraryEffect
-    data class AppInfo(val title: String) : LibraryEffect
     data object OpenImport : LibraryEffect
-    data object Search : LibraryEffect
+    data object GameNotFound : LibraryEffect
 }

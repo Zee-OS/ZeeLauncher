@@ -14,7 +14,9 @@ import com.zeelauncher.core_designsystem.layout.ZeeCanvas
 import com.zeelauncher.core_designsystem.theme.ZeeLauncherTheme
 import com.zeelauncher.core_input.LocalZeeInput
 import com.zeelauncher.core_input.ZeeInputDispatcher
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val input = ZeeInputDispatcher()

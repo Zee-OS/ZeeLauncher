@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.zee.android.library)
+    alias(libs.plugins.zee.hilt)
 }
 
 android {
@@ -7,6 +8,7 @@ android {
 }
 
 dependencies {
-    implementation(projects.coreModel)
+    api(projects.coreModel)
+    api(libs.coil.core)
     implementation(projects.coreCommon)
 }

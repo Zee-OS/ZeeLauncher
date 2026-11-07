@@ -4,17 +4,18 @@ import android.widget.Toast
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_input.ObserveZeeActions
@@ -30,9 +31,9 @@ private const val CAROUSEL_ANIMATION_LABEL = "carousel"
 
 @Composable
 internal fun LibraryRoute(
-    viewModel: LibraryViewModel = viewModel(),
+    viewModel: LibraryViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     ObserveZeeActions(viewModel::onAction)
@@ -40,10 +41,8 @@ internal fun LibraryRoute(
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
             val message = when (effect) {
-                is LibraryEffect.Launch -> context.getString(R.string.library_toast_launch, effect.title)
-                is LibraryEffect.AppInfo -> context.getString(R.string.library_toast_app_info, effect.title)
                 LibraryEffect.OpenImport -> context.getString(R.string.library_toast_import)
-                LibraryEffect.Search -> context.getString(R.string.library_toast_search)
+                LibraryEffect.GameNotFound -> context.getString(R.string.library_toast_game_not_found)
             }
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
@@ -65,6 +64,10 @@ internal fun LibraryScreen(
     onAppInfoClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    if (uiState.isLoading) {
+        Box(modifier.fillMaxSize())
+        return
+    }
     val position by animateFloatAsState(
         targetValue = uiState.selectedIndex.toFloat(),
         animationSpec = tween(

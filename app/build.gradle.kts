@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.zee.android.application)
     alias(libs.plugins.zee.android.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.zee.hilt)
 }
 
 android {
@@ -22,7 +23,8 @@ dependencies {
     implementation(projects.featureLibrary)
     implementation(projects.featureApps)
     implementation(projects.featureSettings)
-
+    implementation(projects.coreScanner)
+    implementation(libs.coil.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

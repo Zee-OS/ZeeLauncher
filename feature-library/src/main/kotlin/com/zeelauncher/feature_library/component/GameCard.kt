@@ -1,6 +1,5 @@
 package com.zeelauncher.feature_library.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,14 +7,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.lerp
+import coil3.compose.AsyncImage
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_designsystem.component.ZeeFocusFrame
@@ -23,31 +26,36 @@ import com.zeelauncher.core_designsystem.icon.ZeePlusIcon
 import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.TextDimen
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
+import com.zeelauncher.core_model.app.AppIcon
+import com.zeelauncher.core_model.game.Game
 import com.zeelauncher.feature_library.R
-import com.zeelauncher.feature_library.viewmodel.LibraryGame
 
 @Composable
 internal fun GameCard(
-    game: LibraryGame,
+    game: Game,
     focus: Float,
     modifier: Modifier = Modifier,
 ) {
-    val cover = game.cover
+    val icon = remember(game.packageName, game.activityName) {
+        AppIcon(game.packageName, game.activityName)
+    }
+    var failed by remember(icon) { mutableStateOf(false) }
     ZeeFocusFrame(focus = focus, modifier = modifier) {
-        if (cover != null) {
-            Image(
-                painter = painterResource(cover),
-                contentDescription = game.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-            )
-        } else {
+        if (failed) {
             Text(
-                text = game.title.uppercase(),
+                text = game.label.uppercase(),
                 style = ZeeTheme.typography.button,
                 color = ZeeTheme.colors.content,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(Dimen.Dp12),
+            )
+        } else {
+            AsyncImage(
+                model = icon,
+                contentDescription = game.label,
+                contentScale = ContentScale.Crop,
+                onError = { failed = true },
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }

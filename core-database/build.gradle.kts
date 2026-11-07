@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.zee.android.library)
+    alias(libs.plugins.zee.room)
+    alias(libs.plugins.zee.hilt)
 }
 
 android {
@@ -7,5 +9,5 @@ android {
 }
 
 dependencies {
-    implementation(projects.coreModel)
+    implementation(libs.kotlinx.coroutines.core)
 }

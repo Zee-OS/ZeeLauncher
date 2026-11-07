@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.zee.android.library)
+    alias(libs.plugins.zee.hilt)
 }
 
 android {

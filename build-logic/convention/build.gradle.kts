@@ -12,6 +12,7 @@ java {
 dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.room.gradlePlugin)
 }
 
 tasks {
@@ -42,6 +43,14 @@ gradlePlugin {
         register("androidFeature") {
             id = libs.plugins.zee.android.feature.get().pluginId
             implementationClass = "AndroidFeatureConventionPlugin"
+        }
+        register("hilt") {
+            id = libs.plugins.zee.hilt.get().pluginId
+            implementationClass = "HiltConventionPlugin"
+        }
+        register("room") {
+            id = libs.plugins.zee.room.get().pluginId
+            implementationClass = "RoomConventionPlugin"
         }
     }
 }
