@@ -12,6 +12,7 @@ object Dimen {
     val DpMinus1 = (-1).dp
     val Dp0 = 0.dp
     val Dp1 = 1.dp
+    val Dp1_5 = 1.5.dp
     val Dp2 = 2.dp
     val Dp2_5 = 2.5.dp
     val Dp3 = 3.dp

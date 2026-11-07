@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.zeelauncher.core_common.constant.MINUS_ONE
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ZERO
+import com.zeelauncher.core_common.startup.AppReadiness
 import com.zeelauncher.core_data.usecase.LaunchGameUseCase
 import com.zeelauncher.core_data.usecase.ObserveLibraryUseCase
 import com.zeelauncher.core_data.usecase.OpenAppInfoUseCase
@@ -33,6 +34,7 @@ class LibraryViewModel @Inject constructor(
     private val syncLibraryUseCase: SyncLibraryUseCase,
     private val launchGameUseCase: LaunchGameUseCase,
     private val openAppInfoUseCase: OpenAppInfoUseCase,
+    private val appReadiness: AppReadiness,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LibraryUiState())
@@ -43,7 +45,10 @@ class LibraryViewModel @Inject constructor(
 
     init {
         observeLibraryUseCase()
-            .onEach { games -> _uiState.update { it.withGames(games) } }
+            .onEach { games ->
+                _uiState.update { it.withGames(games) }
+                appReadiness.markReady()
+            }
             .launchIn(viewModelScope)
     }
 

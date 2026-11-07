@@ -3,4 +3,9 @@
     <style name="Theme.ZeeLauncher" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/zee_background</item>
     </style>
+    <style name="Theme.ZeeLauncher.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/zee_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.ZeeLauncher</item>
+    </style>
 </resources>

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,11 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.lerp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import com.zeelauncher.core_common.constant.ONE
+import com.zeelauncher.core_common.text.toAbbreviation
 import com.zeelauncher.core_designsystem.component.ZeeFocusFrame
+import com.zeelauncher.core_designsystem.component.ZeePlaceholderCover
 import com.zeelauncher.core_designsystem.icon.ZeePlusIcon
 import com.zeelauncher.core_designsystem.modifier.revealHeight
 import com.zeelauncher.core_designsystem.theme.Dimen
@@ -29,6 +30,12 @@ import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.core_model.app.AppIcon
 import com.zeelauncher.core_model.game.Game
 import com.zeelauncher.feature_library.R
+import androidx.compose.animation.core.Animatable
+import androidx.compose.runtime.LaunchedEffect
+import coil3.decode.DataSource
+import com.zeelauncher.core_common.constant.ONE_FLOAT
+import com.zeelauncher.core_common.constant.ZERO_FLOAT
+import com.zeelauncher.core_designsystem.motion.ZeeMotion
 
 @Composable
 internal fun GameCard(
@@ -39,25 +46,37 @@ internal fun GameCard(
     val icon = remember(game.packageName, game.activityName) {
         AppIcon(game.packageName, game.activityName)
     }
-    var failed by remember(icon) { mutableStateOf(false) }
+    val abbreviation = remember(game.label) { game.label.toAbbreviation() }
+    var iconState by remember(icon) { mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Empty) }
+    val iconAlpha = remember(icon) { Animatable(ZERO_FLOAT) }
+
+    LaunchedEffect(iconState) {
+        val state = iconState
+        if (state is AsyncImagePainter.State.Success) {
+            if (state.result.dataSource == DataSource.MEMORY_CACHE) {
+                iconAlpha.snapTo(ONE_FLOAT)
+            } else {
+                iconAlpha.animateTo(ONE_FLOAT, ZeeMotion.spec())
+            }
+        }
+    }
+
     ZeeFocusFrame(focus = focus, modifier = modifier) {
-        if (failed) {
-            Text(
-                text = game.label.uppercase(),
-                style = ZeeTheme.typography.button,
-                color = ZeeTheme.colors.content,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(Dimen.Dp12),
-            )
-        } else {
-            AsyncImage(
-                model = icon,
-                contentDescription = game.label,
-                contentScale = ContentScale.Crop,
-                onError = { failed = true },
-                modifier = Modifier.fillMaxSize(),
+        if (iconAlpha.value < ONE_FLOAT) {
+            ZeePlaceholderCover(
+                label = abbreviation,
+                labelSize = lerp(TextDimen.Sp26, TextDimen.Sp48, focus),
             )
         }
+        AsyncImage(
+            model = icon,
+            contentDescription = game.label,
+            contentScale = ContentScale.Crop,
+            onState = { iconState = it },
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(iconAlpha.value),
+        )
     }
 }
 

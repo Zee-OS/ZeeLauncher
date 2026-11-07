@@ -1,28 +1,43 @@
 package com.dwiaziprasetya.zeelauncher
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.KeyEvent
+import android.view.animation.PathInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.core.splashscreen.SplashScreen
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.dwiaziprasetya.zeelauncher.navigation.ZeeRootNavHost
+import com.zeelauncher.core_common.constant.ZERO_FLOAT
+import com.zeelauncher.core_common.startup.AppReadiness
 import com.zeelauncher.core_designsystem.layout.ZeeCanvas
+import com.zeelauncher.core_designsystem.motion.ZeeMotion
 import com.zeelauncher.core_designsystem.theme.ZeeLauncherTheme
 import com.zeelauncher.core_input.LocalZeeInput
 import com.zeelauncher.core_input.ZeeInputDispatcher
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+
+private const val SPLASH_TIMEOUT_MILLIS = 3_000L
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var appReadiness: AppReadiness
+
     private val input = ZeeInputDispatcher()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        holdSplashUntilReady(splashScreen)
         enableEdgeToEdge()
         hideSystemBars()
         setContent {
@@ -38,6 +53,23 @@ class MainActivity : ComponentActivity() {
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean =
         input.dispatch(event) || super.dispatchKeyEvent(event)
+
+    private fun holdSplashUntilReady(splashScreen: SplashScreen) {
+        val startedAt = SystemClock.uptimeMillis()
+        splashScreen.setKeepOnScreenCondition {
+            !appReadiness.isReady.value && SystemClock.uptimeMillis() - startedAt < SPLASH_TIMEOUT_MILLIS
+        }
+        splashScreen.setOnExitAnimationListener { provider ->
+            provider.view.animate()
+                .alpha(ZERO_FLOAT)
+                .setDuration(ZeeMotion.DURATION_MILLIS.toLong())
+                .setInterpolator(
+                    PathInterpolator(ZeeMotion.EASING_X1, ZeeMotion.EASING_Y1, ZeeMotion.EASING_X2, ZeeMotion.EASING_Y2),
+                )
+                .withEndAction { provider.remove() }
+                .start()
+        }
+    }
 
     private fun hideSystemBars() {
         WindowCompat.getInsetsController(window, window.decorView).apply {

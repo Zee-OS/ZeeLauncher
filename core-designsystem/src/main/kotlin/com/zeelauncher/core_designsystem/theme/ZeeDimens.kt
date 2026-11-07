@@ -19,6 +19,9 @@ object ZeeDimens {
     val DashLength = Dimen.Dp9
     val DashGap = Dimen.Dp6
 
+    val HatchSpacing = Dimen.Dp13
+    val HatchStroke = Dimen.Dp1_5
+
     val IconSize = Dimen.Dp22
     val IconStroke = Dimen.Dp2_5
 

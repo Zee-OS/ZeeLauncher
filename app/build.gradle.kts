@@ -24,10 +24,13 @@ dependencies {
     implementation(projects.featureApps)
     implementation(projects.featureSettings)
     implementation(projects.coreScanner)
+    implementation(projects.coreDatabase)
+
     implementation(libs.coil.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.core.splashscreen)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

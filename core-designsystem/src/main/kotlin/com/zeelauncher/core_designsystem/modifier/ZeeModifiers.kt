@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Dp
 import com.zeelauncher.core_common.constant.TWO_FLOAT
 import com.zeelauncher.core_common.constant.ZERO
+import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import kotlin.math.roundToInt
 
@@ -46,4 +47,19 @@ fun Modifier.revealHeight(fraction: Float): Modifier = clipToBounds().layout { m
     val placeable = measurable.measure(constraints)
     val height = (placeable.height * fraction).roundToInt()
     layout(placeable.width, height) { placeable.place(ZERO, ZERO) }
+}
+
+fun Modifier.hatch(color: Color): Modifier = clipToBounds().drawBehind {
+    val spacing = ZeeDimens.HatchSpacing.toPx()
+    val stroke = ZeeDimens.HatchStroke.toPx()
+    var startX = -size.height
+    while (startX < size.width) {
+        drawLine(
+            color = color,
+            start = Offset(startX, size.height),
+            end = Offset(startX + size.height, ZERO_FLOAT),
+            strokeWidth = stroke,
+        )
+        startX += spacing
+    }
 }
