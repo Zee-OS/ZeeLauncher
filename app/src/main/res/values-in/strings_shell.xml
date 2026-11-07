@@ -1,0 +1,4 @@
+<resources>
+    <string name="shell_toast_controller_connected">CONTROLLER TERHUBUNG</string>
+    <string name="shell_toast_controller_disconnected">CONTROLLER TERPUTUS</string>
+</resources>

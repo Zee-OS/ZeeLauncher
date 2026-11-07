@@ -148,6 +148,7 @@ object Dimen {
     val Dp375 = 375.dp
     val Dp380 = 380.dp
     val Dp400 = 400.dp
+    val Dp510 = 510.dp
     val Dp720 = 720.dp
     val Dp1280 = 1280.dp
 }

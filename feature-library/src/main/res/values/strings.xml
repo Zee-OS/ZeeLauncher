@@ -13,6 +13,16 @@
     <string name="library_hint_launch">LAUNCH</string>
     <string name="library_hint_import">IMPORT</string>
 
-    <string name="library_toast_import">Open import</string>
-    <string name="library_toast_game_not_found">Game not found</string>
+    <string name="library_toast_import">OPEN IMPORT</string>
+    <string name="library_toast_game_not_found">GAME NOT FOUND</string>
+
+    <plurals name="library_toast_games_added">
+        <item quantity="one">GAME ADDED</item>
+        <item quantity="other">%d GAMES ADDED</item>
+    </plurals>
+
+    <plurals name="library_toast_games_uninstalled">
+        <item quantity="one">GAME UNINSTALLED</item>
+        <item quantity="other">%d GAMES UNINSTALLED</item>
+    </plurals>
 </resources>

@@ -25,6 +25,7 @@ internal class LibraryRepositoryImpl @Inject constructor(
 ) : LibraryRepository {
 
     private val syncMutex = Mutex()
+    private var hasSyncedOnce = false
     private val syncResults = MutableSharedFlow<LibrarySyncResult>(extraBufferCapacity = SYNC_RESULT_BUFFER_CAPACITY)
 
     override fun observeLibrary(): Flow<List<Game>> =
@@ -54,8 +55,11 @@ internal class LibraryRepositoryImpl @Inject constructor(
 
         libraryLocalDataSource.syncGames(removed, refreshed + added)
 
+        val isInitialPopulation = !hasSyncedOnce && current.isEmpty()
+        hasSyncedOnce = true
+
         val result = LibrarySyncResult(addedCount = added.size, removedCount = removed.size)
-        if (result.hasChanges) syncResults.emit(result)
+        if (result.hasChanges && !isInitialPopulation) syncResults.emit(result)
     }
 
     override suspend fun markPlayed(packageName: String) {

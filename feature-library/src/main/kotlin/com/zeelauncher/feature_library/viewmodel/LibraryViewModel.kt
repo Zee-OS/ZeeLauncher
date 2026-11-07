@@ -7,6 +7,7 @@ import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.startup.AppReadiness
 import com.zeelauncher.core_data.usecase.LaunchGameUseCase
+import com.zeelauncher.core_data.usecase.ObserveLibrarySyncResultsUseCase
 import com.zeelauncher.core_data.usecase.ObserveLibraryUseCase
 import com.zeelauncher.core_data.usecase.OpenAppInfoUseCase
 import com.zeelauncher.core_data.usecase.SyncLibraryUseCase
@@ -31,6 +32,7 @@ private const val EFFECT_BUFFER_CAPACITY = 8
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     observeLibraryUseCase: ObserveLibraryUseCase,
+    observeLibrarySyncResultsUseCase: ObserveLibrarySyncResultsUseCase,
     private val syncLibraryUseCase: SyncLibraryUseCase,
     private val launchGameUseCase: LaunchGameUseCase,
     private val openAppInfoUseCase: OpenAppInfoUseCase,
@@ -48,6 +50,12 @@ class LibraryViewModel @Inject constructor(
             .onEach { games ->
                 _uiState.update { it.withGames(games) }
                 appReadiness.markReady()
+            }
+            .launchIn(viewModelScope)
+
+        observeLibrarySyncResultsUseCase()
+            .onEach { result ->
+                _effects.emit(LibraryEffect.LibraryUpdated(result.addedCount, result.removedCount))
             }
             .launchIn(viewModelScope)
     }
@@ -71,7 +79,7 @@ class LibraryViewModel @Inject constructor(
                 confirm()
                 true
             }
-            ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back, ZeeAction.Search -> false
+            ZeeAction.Up, ZeeAction.Down, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back, ZeeAction.Search -> false
         }
     }
 

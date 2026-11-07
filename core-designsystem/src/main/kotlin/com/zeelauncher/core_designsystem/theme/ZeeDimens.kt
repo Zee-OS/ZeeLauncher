@@ -25,6 +25,14 @@ object ZeeDimens {
     val IconSize = Dimen.Dp22
     val IconStroke = Dimen.Dp2_5
 
+    val DrawerWidth = Dimen.Dp510
+    val DrawerPadding = Dimen.Dp44
+    val ModalPadding = Dimen.Dp40
+
+    val ToastTop = Dimen.Dp84
+    val ToastHeight = Dimen.Dp52
+    val ToastGap = Dimen.Dp18
+
     val BadgeSize = Dimen.Dp34
     val BadgeWideMinWidth = Dimen.Dp46
 }

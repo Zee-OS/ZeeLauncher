@@ -7,18 +7,27 @@ import android.view.animation.PathInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.dwiaziprasetya.zeelauncher.navigation.ZeeRootNavHost
+import com.dwiaziprasetya.zeelauncher.shell.ControllerToasts
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_common.startup.AppReadiness
 import com.zeelauncher.core_designsystem.layout.ZeeCanvas
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
+import com.zeelauncher.core_designsystem.overlay.LocalZeeOverlayHost
+import com.zeelauncher.core_designsystem.overlay.ZeeOverlayHost
+import com.zeelauncher.core_designsystem.overlay.ZeeOverlayHostState
 import com.zeelauncher.core_designsystem.theme.ZeeLauncherTheme
+import com.zeelauncher.core_designsystem.toast.LocalZeeToast
+import com.zeelauncher.core_designsystem.toast.ZeeToastHost
+import com.zeelauncher.core_designsystem.toast.ZeeToastHostState
 import com.zeelauncher.core_input.LocalZeeInput
 import com.zeelauncher.core_input.ZeeInputDispatcher
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,10 +50,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         hideSystemBars()
         setContent {
-            CompositionLocalProvider(LocalZeeInput provides input) {
+            val overlayHost = remember { ZeeOverlayHostState() }
+            val toastHost = remember { ZeeToastHostState() }
+            CompositionLocalProvider(
+                LocalZeeInput provides input,
+                LocalZeeOverlayHost provides overlayHost,
+                LocalZeeToast provides toastHost,
+            ) {
                 ZeeLauncherTheme {
                     ZeeCanvas {
-                        ZeeRootNavHost()
+                        Box {
+                            ZeeRootNavHost()
+                            ZeeOverlayHost(overlayHost)
+                            ZeeToastHost(toastHost)
+                        }
+                        ControllerToasts()
                     }
                 }
             }

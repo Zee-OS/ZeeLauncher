@@ -33,4 +33,5 @@ data class LibraryUiState(
 sealed interface LibraryEffect {
     data object OpenImport : LibraryEffect
     data object GameNotFound : LibraryEffect
+    data class LibraryUpdated(val addedCount: Int, val removedCount: Int) : LibraryEffect
 }

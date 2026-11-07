@@ -15,6 +15,7 @@ data class ZeeColors(
     val contentSecondary: Color,
     val hint: Color,
     val success: Color,
+    val scrim: Color,
 )
 
 val ZeeDarkColors = ZeeColors(
@@ -27,6 +28,7 @@ val ZeeDarkColors = ZeeColors(
     contentSecondary = Color(0xFF9AA3B8),
     hint = Color(0xFFC9D0E0),
     success = Color(0xFF3DDC97),
+    scrim = Color(0xBF0B0D14),
 )
 
 val LocalZeeColors = staticCompositionLocalOf { ZeeDarkColors }

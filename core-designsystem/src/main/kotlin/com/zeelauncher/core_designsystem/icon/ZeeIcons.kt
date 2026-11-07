@@ -56,6 +56,31 @@ private const val WIFI_DOT_RADIUS = 1.6f
 
 private const val BATTERY_LOW_THRESHOLD = 20
 
+private const val CHECK_START_X = 4f
+private const val CHECK_START_Y = 11.5f
+private const val CHECK_MIDDLE_X = 9f
+private const val CHECK_MIDDLE_Y = 16.5f
+private const val CHECK_END_X = 18f
+private const val CHECK_END_Y = 6f
+
+private const val CLOSE_MIN = 5f
+private const val CLOSE_MAX = 17f
+
+private const val CONTROLLER_LEFT = 2f
+private const val CONTROLLER_TOP = 6f
+private const val CONTROLLER_RIGHT = 20f
+private const val CONTROLLER_BOTTOM = 16f
+private const val CONTROLLER_DPAD_X = 7f
+private const val CONTROLLER_DPAD_Y = 11f
+private const val CONTROLLER_DPAD_ARM = 2f
+private const val CONTROLLER_BUTTON_A_X = 14f
+private const val CONTROLLER_BUTTON_A_Y = 10f
+private const val CONTROLLER_BUTTON_B_X = 16.5f
+private const val CONTROLLER_BUTTON_B_Y = 12.5f
+private const val CONTROLLER_BUTTON_RADIUS = 1.3f
+private const val CONTROLLER_SLASH_MIN = 2f
+private const val CONTROLLER_SLASH_MAX = 20f
+
 @Composable
 fun ZeeBellIcon(
     modifier: Modifier = Modifier,
@@ -161,5 +186,77 @@ fun ZeePlusIcon(
             topLeft = Offset(ZERO_FLOAT, (this.size.height - s) / TWO_FLOAT),
             size = Size(this.size.width, s),
         )
+    }
+}
+
+@Composable
+fun ZeeCheckIcon(
+    modifier: Modifier = Modifier,
+    color: Color = ZeeTheme.colors.content,
+) {
+    Canvas(modifier.size(ZeeDimens.IconSize)) {
+        val u = size.width / ICON_VIEWPORT
+        val path = Path().apply {
+            moveTo(CHECK_START_X * u, CHECK_START_Y * u)
+            lineTo(CHECK_MIDDLE_X * u, CHECK_MIDDLE_Y * u)
+            lineTo(CHECK_END_X * u, CHECK_END_Y * u)
+        }
+        drawPath(path, color, style = Stroke(width = ZeeDimens.IconStroke.toPx(), cap = StrokeCap.Square))
+    }
+}
+
+@Composable
+fun ZeeCloseIcon(
+    modifier: Modifier = Modifier,
+    color: Color = ZeeTheme.colors.content,
+) {
+    Canvas(modifier.size(ZeeDimens.IconSize)) {
+        val u = size.width / ICON_VIEWPORT
+        val stroke = ZeeDimens.IconStroke.toPx()
+        drawLine(color, Offset(CLOSE_MIN * u, CLOSE_MIN * u), Offset(CLOSE_MAX * u, CLOSE_MAX * u), stroke, StrokeCap.Square)
+        drawLine(color, Offset(CLOSE_MAX * u, CLOSE_MIN * u), Offset(CLOSE_MIN * u, CLOSE_MAX * u), stroke, StrokeCap.Square)
+    }
+}
+
+@Composable
+fun ZeeControllerIcon(
+    modifier: Modifier = Modifier,
+    color: Color = ZeeTheme.colors.content,
+    crossedOut: Boolean = false,
+) {
+    Canvas(modifier.size(ZeeDimens.IconSize)) {
+        val u = size.width / ICON_VIEWPORT
+        val stroke = ZeeDimens.IconStroke.toPx()
+        drawRect(
+            color = color,
+            topLeft = Offset(CONTROLLER_LEFT * u, CONTROLLER_TOP * u),
+            size = Size((CONTROLLER_RIGHT - CONTROLLER_LEFT) * u, (CONTROLLER_BOTTOM - CONTROLLER_TOP) * u),
+            style = Stroke(width = stroke),
+        )
+        drawLine(
+            color,
+            Offset((CONTROLLER_DPAD_X - CONTROLLER_DPAD_ARM) * u, CONTROLLER_DPAD_Y * u),
+            Offset((CONTROLLER_DPAD_X + CONTROLLER_DPAD_ARM) * u, CONTROLLER_DPAD_Y * u),
+            stroke,
+            StrokeCap.Square,
+        )
+        drawLine(
+            color,
+            Offset(CONTROLLER_DPAD_X * u, (CONTROLLER_DPAD_Y - CONTROLLER_DPAD_ARM) * u),
+            Offset(CONTROLLER_DPAD_X * u, (CONTROLLER_DPAD_Y + CONTROLLER_DPAD_ARM) * u),
+            stroke,
+            StrokeCap.Square,
+        )
+        drawCircle(color, CONTROLLER_BUTTON_RADIUS * u, Offset(CONTROLLER_BUTTON_A_X * u, CONTROLLER_BUTTON_A_Y * u))
+        drawCircle(color, CONTROLLER_BUTTON_RADIUS * u, Offset(CONTROLLER_BUTTON_B_X * u, CONTROLLER_BUTTON_B_Y * u))
+        if (crossedOut) {
+            drawLine(
+                color,
+                Offset(CONTROLLER_SLASH_MIN * u, CONTROLLER_SLASH_MIN * u),
+                Offset(CONTROLLER_SLASH_MAX * u, CONTROLLER_SLASH_MAX * u),
+                stroke,
+                StrokeCap.Square,
+            )
+        }
     }
 }

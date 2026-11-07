@@ -1,3 +1,11 @@
 <resources>
-    <string name="library_toast_game_not_found">Game tidak ditemukan</string>
+    <string name="library_toast_game_not_found">GAME TIDAK DITEMUKAN</string>
+
+    <plurals name="library_toast_games_added">
+        <item quantity="other">%d GAME DITAMBAHKAN</item>
+    </plurals>
+
+    <plurals name="library_toast_games_uninstalled">
+        <item quantity="other">%d GAME DIHAPUS</item>
+    </plurals>
 </resources>

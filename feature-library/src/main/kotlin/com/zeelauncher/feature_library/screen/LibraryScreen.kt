@@ -1,7 +1,6 @@
 package com.zeelauncher.feature_library.screen
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
@@ -18,8 +17,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zeelauncher.core_common.constant.ONE_FLOAT
+import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
+import com.zeelauncher.core_designsystem.toast.LocalZeeToast
+import com.zeelauncher.core_designsystem.toast.ZeeToastHostState
+import com.zeelauncher.core_designsystem.toast.ZeeToastIcon
 import com.zeelauncher.core_input.ObserveZeeActions
 import com.zeelauncher.feature_library.R
 import com.zeelauncher.feature_library.component.GameCarousel
@@ -37,6 +40,7 @@ internal fun LibraryRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val toast = LocalZeeToast.current
 
     ObserveZeeActions(viewModel::onAction)
 
@@ -46,9 +50,7 @@ internal fun LibraryRoute(
     }
 
     LaunchedEffect(viewModel) {
-        viewModel.effects.collect { effect ->
-            Toast.makeText(context, effect.message(context), Toast.LENGTH_SHORT).show()
-        }
+        viewModel.effects.collect { effect -> toast.showEffect(effect, context) }
     }
 
     LibraryScreen(
@@ -118,7 +120,31 @@ private fun LibraryContent(
     }
 }
 
-private fun LibraryEffect.message(context: Context): String = when (this) {
-    LibraryEffect.OpenImport -> context.getString(R.string.library_toast_import)
-    LibraryEffect.GameNotFound -> context.getString(R.string.library_toast_game_not_found)
+private fun ZeeToastHostState.showEffect(effect: LibraryEffect, context: Context) {
+    when (effect) {
+        LibraryEffect.OpenImport -> show(context.getString(R.string.library_toast_import), ZeeToastIcon.Check)
+        LibraryEffect.GameNotFound -> show(context.getString(R.string.library_toast_game_not_found), ZeeToastIcon.Close)
+        is LibraryEffect.LibraryUpdated -> {
+            if (effect.addedCount > ZERO) {
+                show(
+                    context.resources.getQuantityString(
+                        R.plurals.library_toast_games_added,
+                        effect.addedCount,
+                        effect.addedCount,
+                    ),
+                    ZeeToastIcon.Check,
+                )
+            }
+            if (effect.removedCount > ZERO) {
+                show(
+                    context.resources.getQuantityString(
+                        R.plurals.library_toast_games_uninstalled,
+                        effect.removedCount,
+                        effect.removedCount,
+                    ),
+                    ZeeToastIcon.Close,
+                )
+            }
+        }
+    }
 }
