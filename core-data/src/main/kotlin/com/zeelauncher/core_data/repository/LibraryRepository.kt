@@ -2,11 +2,14 @@ package com.zeelauncher.core_data.repository
 
 import com.zeelauncher.core_model.app.InstalledApp
 import com.zeelauncher.core_model.game.Game
+import com.zeelauncher.core_model.library.LibrarySyncResult
 import kotlinx.coroutines.flow.Flow
 
 interface LibraryRepository {
 
     fun observeLibrary(): Flow<List<Game>>
+
+    fun observeSyncResults(): Flow<LibrarySyncResult>
 
     suspend fun syncLibrary()
 

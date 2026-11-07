@@ -8,6 +8,7 @@ import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_data.usecase.LaunchGameUseCase
 import com.zeelauncher.core_data.usecase.ObserveLibraryUseCase
 import com.zeelauncher.core_data.usecase.OpenAppInfoUseCase
+import com.zeelauncher.core_data.usecase.SyncLibraryUseCase
 import com.zeelauncher.core_input.ZeeAction
 import com.zeelauncher.core_model.game.Game
 import com.zeelauncher.core_model.launch.LaunchResult
@@ -29,6 +30,7 @@ private const val EFFECT_BUFFER_CAPACITY = 8
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     observeLibraryUseCase: ObserveLibraryUseCase,
+    private val syncLibraryUseCase: SyncLibraryUseCase,
     private val launchGameUseCase: LaunchGameUseCase,
     private val openAppInfoUseCase: OpenAppInfoUseCase,
 ) : ViewModel() {
@@ -43,6 +45,10 @@ class LibraryViewModel @Inject constructor(
         observeLibraryUseCase()
             .onEach { games -> _uiState.update { it.withGames(games) } }
             .launchIn(viewModelScope)
+    }
+
+    fun onStart() {
+        viewModelScope.launch { syncLibraryUseCase() }
     }
 
     fun onAction(action: ZeeAction): Boolean {

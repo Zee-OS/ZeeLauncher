@@ -6,12 +6,17 @@ import com.zeelauncher.core_data.mapper.toGame
 import com.zeelauncher.core_data.mapper.toLibraryGameEntity
 import com.zeelauncher.core_model.app.InstalledApp
 import com.zeelauncher.core_model.game.Game
+import com.zeelauncher.core_model.library.LibrarySyncResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val SYNC_RESULT_BUFFER_CAPACITY = 4
 
 @Singleton
 internal class LibraryRepositoryImpl @Inject constructor(
@@ -20,11 +25,18 @@ internal class LibraryRepositoryImpl @Inject constructor(
 ) : LibraryRepository {
 
     private val syncMutex = Mutex()
+    private val syncResults = MutableSharedFlow<LibrarySyncResult>(extraBufferCapacity = SYNC_RESULT_BUFFER_CAPACITY)
 
     override fun observeLibrary(): Flow<List<Game>> =
         libraryLocalDataSource.observeGames().map { games -> games.map { it.toGame() } }
 
-    override suspend fun syncLibrary() = syncMutex.withLock {
+    override fun observeSyncResults(): Flow<LibrarySyncResult> = syncResults.asSharedFlow()
+
+    override suspend fun syncLibrary() {
+        syncMutex.withLock { syncLocked() }
+    }
+
+    private suspend fun syncLocked() {
         val installed = installedAppsDataSource.getInstalledApps().associateBy { it.packageName }
         val hidden = libraryLocalDataSource.getHiddenPackageNames()
         val current = libraryLocalDataSource.getGames()
@@ -41,6 +53,9 @@ internal class LibraryRepositoryImpl @Inject constructor(
             .map { it.toLibraryGameEntity() }
 
         libraryLocalDataSource.syncGames(removed, refreshed + added)
+
+        val result = LibrarySyncResult(addedCount = added.size, removedCount = removed.size)
+        if (result.hasChanges) syncResults.emit(result)
     }
 
     override suspend fun markPlayed(packageName: String) {

@@ -10,6 +10,8 @@ import com.zeelauncher.core_data.repository.LibraryRepository
 import com.zeelauncher.core_data.repository.LibraryRepositoryImpl
 import com.zeelauncher.core_data.usecase.LaunchGameUseCase
 import com.zeelauncher.core_data.usecase.LaunchGameUseCaseImpl
+import com.zeelauncher.core_data.usecase.ObserveLibrarySyncResultsUseCase
+import com.zeelauncher.core_data.usecase.ObserveLibrarySyncResultsUseCaseImpl
 import com.zeelauncher.core_data.usecase.ObserveLibraryUseCase
 import com.zeelauncher.core_data.usecase.ObserveLibraryUseCaseImpl
 import com.zeelauncher.core_data.usecase.OpenAppInfoUseCase
@@ -39,6 +41,11 @@ internal abstract class DataModule {
 
     @Binds
     abstract fun bindsObserveLibraryUseCase(impl: ObserveLibraryUseCaseImpl): ObserveLibraryUseCase
+
+    @Binds
+    abstract fun bindsObserveLibrarySyncResultsUseCase(
+        impl: ObserveLibrarySyncResultsUseCaseImpl,
+    ): ObserveLibrarySyncResultsUseCase
 
     @Binds
     abstract fun bindsSyncLibraryUseCase(impl: SyncLibraryUseCaseImpl): SyncLibraryUseCase

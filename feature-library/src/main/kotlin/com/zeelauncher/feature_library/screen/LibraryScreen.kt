@@ -1,9 +1,14 @@
 package com.zeelauncher.feature_library.screen
 
+import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
@@ -28,6 +34,8 @@ import com.zeelauncher.feature_library.viewmodel.LibraryViewModel
 
 private const val CAROUSEL_ANIMATION_MILLIS = 260
 private const val CAROUSEL_ANIMATION_LABEL = "carousel"
+private const val LIBRARY_CHANGE_MILLIS = 220
+private const val LIBRARY_CHANGE_LABEL = "library_change"
 
 @Composable
 internal fun LibraryRoute(
@@ -38,13 +46,14 @@ internal fun LibraryRoute(
 
     ObserveZeeActions(viewModel::onAction)
 
+    LifecycleStartEffect(viewModel) {
+        viewModel.onStart()
+        onStopOrDispose { }
+    }
+
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
-            val message = when (effect) {
-                LibraryEffect.OpenImport -> context.getString(R.string.library_toast_import)
-                LibraryEffect.GameNotFound -> context.getString(R.string.library_toast_game_not_found)
-            }
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, effect.message(context), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -64,10 +73,35 @@ internal fun LibraryScreen(
     onAppInfoClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (uiState.isLoading) {
-        Box(modifier.fillMaxSize())
-        return
+    AnimatedContent(
+        targetState = uiState,
+        contentKey = { it.contentKey },
+        transitionSpec = {
+            fadeIn(tween(LIBRARY_CHANGE_MILLIS)) togetherWith fadeOut(tween(LIBRARY_CHANGE_MILLIS))
+        },
+        label = LIBRARY_CHANGE_LABEL,
+        modifier = modifier.fillMaxSize(),
+    ) { state ->
+        if (state.isLoading) {
+            Box(Modifier.fillMaxSize())
+        } else {
+            LibraryContent(
+                uiState = state,
+                onCardClick = onCardClick,
+                onPlayClick = onPlayClick,
+                onAppInfoClick = onAppInfoClick,
+            )
+        }
     }
+}
+
+@Composable
+private fun LibraryContent(
+    uiState: LibraryUiState,
+    onCardClick: (Int) -> Unit,
+    onPlayClick: () -> Unit,
+    onAppInfoClick: () -> Unit,
+) {
     val position by animateFloatAsState(
         targetValue = uiState.selectedIndex.toFloat(),
         animationSpec = tween(
@@ -76,7 +110,7 @@ internal fun LibraryScreen(
         ),
         label = CAROUSEL_ANIMATION_LABEL,
     )
-    Column(modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize()) {
         GameCarousel(
             items = uiState.items,
             position = position,
@@ -93,4 +127,9 @@ internal fun LibraryScreen(
             modifier = Modifier.padding(horizontal = ZeeDimens.ScreenPaddingHorizontal),
         )
     }
+}
+
+private fun LibraryEffect.message(context: Context): String = when (this) {
+    LibraryEffect.OpenImport -> context.getString(R.string.library_toast_import)
+    LibraryEffect.GameNotFound -> context.getString(R.string.library_toast_game_not_found)
 }
