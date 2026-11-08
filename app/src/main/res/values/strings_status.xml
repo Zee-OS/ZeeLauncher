@@ -1,0 +1,10 @@
+<resources>
+    <string name="status_network">NETWORK</string>
+    <string name="status_network_wifi">WI-FI</string>
+    <string name="status_network_mobile">MOBILE DATA</string>
+    <string name="status_network_ethernet">ETHERNET</string>
+    <string name="status_network_offline">OFFLINE</string>
+    <string name="status_battery">BATTERY</string>
+    <string name="status_battery_charging">BATTERY · CHARGING</string>
+    <string name="status_hint_close">CLOSE</string>
+</resources>

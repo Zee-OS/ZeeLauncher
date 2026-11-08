@@ -10,5 +10,6 @@ enum class ZeeAction {
     Confirm,
     Back,
     AppInfo,
+    Menu,
     Search,
 }

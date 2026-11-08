@@ -105,7 +105,7 @@ class SettingsViewModel @Inject constructor(
             _uiState.update { it.copy(focus = SettingsFocus.Panel, rowIndex = ZERO) }
             true
         }
-        ZeeAction.Left, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back, ZeeAction.AppInfo, ZeeAction.Search -> false
+        ZeeAction.Left, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back, ZeeAction.AppInfo, ZeeAction.Menu, ZeeAction.Search -> false
     }
 
     private fun onPanelAction(action: ZeeAction): Boolean {
@@ -138,7 +138,7 @@ class SettingsViewModel @Inject constructor(
                 focusSidebar()
                 true
             }
-            ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.AppInfo, ZeeAction.Search -> false
+            ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.AppInfo, ZeeAction.Menu, ZeeAction.Search -> false
         }
     }
 

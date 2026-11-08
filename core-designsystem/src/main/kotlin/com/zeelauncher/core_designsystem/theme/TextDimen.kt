@@ -54,6 +54,7 @@ object TextDimen {
     val Sp48 = 48.sp
     val Sp49 = 49.sp
     val Sp50 = 50.sp
+    val Sp84 = 84.sp
 
     val Em0 = 0.em
     val Em0_04 = 0.04.em

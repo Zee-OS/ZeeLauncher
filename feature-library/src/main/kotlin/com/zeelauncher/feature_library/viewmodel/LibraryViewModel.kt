@@ -100,7 +100,7 @@ class LibraryViewModel @Inject constructor(
                 openAppInfo()
                 true
             }
-            ZeeAction.Up, ZeeAction.Down, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back, ZeeAction.Search -> false
+            ZeeAction.Up, ZeeAction.Down, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back, ZeeAction.Menu, ZeeAction.Search -> false
         }
     }
 
@@ -129,7 +129,7 @@ class LibraryViewModel @Inject constructor(
             ZeeAction.Down -> moveAppInfoSelection(ONE)
             ZeeAction.Confirm -> selectAppInfoOption()
             ZeeAction.Back, ZeeAction.AppInfo -> closeAppInfo()
-            ZeeAction.Left, ZeeAction.Right, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Search -> Unit
+            ZeeAction.Left, ZeeAction.Right, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Menu, ZeeAction.Search -> Unit
         }
         return true
     }
@@ -151,7 +151,7 @@ class LibraryViewModel @Inject constructor(
             ZeeAction.Left, ZeeAction.Right, ZeeAction.Up, ZeeAction.Down -> moveImportSelection(action)
             ZeeAction.Confirm -> importSelectedApp()
             ZeeAction.Back -> closeImport()
-            ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Search, ZeeAction.AppInfo -> Unit
+            ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Search, ZeeAction.AppInfo, ZeeAction.Menu -> Unit
         }
         return true
     }

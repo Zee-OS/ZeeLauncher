@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
+import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_HUNDRED
 import com.zeelauncher.core_common.constant.ONE_HUNDRED_FLOAT
 import com.zeelauncher.core_common.constant.TWO_FLOAT
@@ -56,6 +57,13 @@ private const val WIFI_DOT_RADIUS = 1.6f
 
 private const val BATTERY_LOW_THRESHOLD = 20
 
+private const val SIGNAL_BAR_COUNT = 4
+private const val SIGNAL_LEFT = 3f
+private const val SIGNAL_BOTTOM = 19f
+private const val SIGNAL_BAR_WIDTH = 3f
+private const val SIGNAL_BAR_GAP = 1.5f
+private const val SIGNAL_BAR_STEP = 3.5f
+
 private const val CHECK_START_X = 4f
 private const val CHECK_START_Y = 11.5f
 private const val CHECK_MIDDLE_X = 9f
@@ -78,8 +86,8 @@ private const val CONTROLLER_BUTTON_A_Y = 10f
 private const val CONTROLLER_BUTTON_B_X = 16.5f
 private const val CONTROLLER_BUTTON_B_Y = 12.5f
 private const val CONTROLLER_BUTTON_RADIUS = 1.3f
-private const val CONTROLLER_SLASH_MIN = 2f
-private const val CONTROLLER_SLASH_MAX = 20f
+private const val ICON_SLASH_MIN = 2f
+private const val ICON_SLASH_MAX = 20f
 
 @Composable
 fun ZeeBellIcon(
@@ -118,6 +126,7 @@ fun ZeeBellIcon(
 fun ZeeWifiIcon(
     modifier: Modifier = Modifier,
     color: Color = ZeeTheme.colors.content,
+    crossedOut: Boolean = false,
 ) {
     Canvas(modifier.size(ZeeDimens.IconSize)) {
         val u = size.width / ICON_VIEWPORT
@@ -135,6 +144,34 @@ fun ZeeWifiIcon(
             )
         }
         drawCircle(color, WIFI_DOT_RADIUS * u, center)
+        if (crossedOut) {
+            drawLine(
+                color,
+                Offset(ICON_SLASH_MIN * u, ICON_SLASH_MIN * u),
+                Offset(ICON_SLASH_MAX * u, ICON_SLASH_MAX * u),
+                ZeeDimens.IconStroke.toPx(),
+                StrokeCap.Square,
+            )
+        }
+    }
+}
+
+@Composable
+fun ZeeSignalIcon(
+    level: Int,
+    modifier: Modifier = Modifier,
+) {
+    val colors = ZeeTheme.colors
+    Canvas(modifier.size(ZeeDimens.IconSize)) {
+        val u = size.width / ICON_VIEWPORT
+        repeat(SIGNAL_BAR_COUNT) { index ->
+            val height = SIGNAL_BAR_STEP * (index + ONE) * u
+            drawRect(
+                color = if (index < level) colors.content else colors.shadow,
+                topLeft = Offset((SIGNAL_LEFT + index * (SIGNAL_BAR_WIDTH + SIGNAL_BAR_GAP)) * u, SIGNAL_BOTTOM * u - height),
+                size = Size(SIGNAL_BAR_WIDTH * u, height),
+            )
+        }
     }
 }
 
@@ -252,8 +289,8 @@ fun ZeeControllerIcon(
         if (crossedOut) {
             drawLine(
                 color,
-                Offset(CONTROLLER_SLASH_MIN * u, CONTROLLER_SLASH_MIN * u),
-                Offset(CONTROLLER_SLASH_MAX * u, CONTROLLER_SLASH_MAX * u),
+                Offset(ICON_SLASH_MIN * u, ICON_SLASH_MIN * u),
+                Offset(ICON_SLASH_MAX * u, ICON_SLASH_MAX * u),
                 stroke,
                 StrokeCap.Square,
             )

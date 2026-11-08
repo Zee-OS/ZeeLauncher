@@ -7,8 +7,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.zeelauncher.core_designsystem.component.ZeeLogo
+import com.zeelauncher.core_designsystem.component.ZeeNetworkIndicator
 import com.zeelauncher.core_designsystem.component.ZeeStatusBar
 import com.zeelauncher.core_designsystem.component.ZeeTabRow
+import com.zeelauncher.core_designsystem.modifier.noRippleClickable
 
 @Composable
 internal fun MainHeader(
@@ -16,11 +18,12 @@ internal fun MainHeader(
     onTabClick: (MainTab) -> Unit,
     onPrevious: () -> Unit,
     onNext: () -> Unit,
+    status: DeviceStatus,
+    onStatusClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val tabs = MainTab.entries
     val labels = tabs.map { stringResource(it.labelRes) }
-    val status = rememberDeviceStatus()
     Box(modifier.fillMaxWidth()) {
         ZeeLogo(Modifier.align(Alignment.CenterStart))
         ZeeTabRow(
@@ -32,9 +35,19 @@ internal fun MainHeader(
             modifier = Modifier.align(Alignment.Center),
         )
         ZeeStatusBar(
-            batteryPercent = status.battery,
+            batteryPercent = status.batteryPercent,
+            network = status.network.type.toIndicator(),
+            signalLevel = status.signalLevel,
             time = status.time,
-            modifier = Modifier.align(Alignment.CenterEnd),
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .noRippleClickable(onStatusClick),
         )
     }
+}
+
+private fun NetworkType.toIndicator(): ZeeNetworkIndicator = when (this) {
+    NetworkType.Wifi -> ZeeNetworkIndicator.Wifi
+    NetworkType.Cellular, NetworkType.Ethernet -> ZeeNetworkIndicator.Signal
+    NetworkType.None -> ZeeNetworkIndicator.Offline
 }

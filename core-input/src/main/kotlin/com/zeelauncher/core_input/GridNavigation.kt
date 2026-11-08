@@ -18,5 +18,5 @@ fun ZeeAction.moveInGrid(index: Int, size: Int, columns: Int): Int? = when (this
             else -> index
         }
     }
-    ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Confirm, ZeeAction.Back, ZeeAction.AppInfo, ZeeAction.Search -> null
+    ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Confirm, ZeeAction.Back, ZeeAction.AppInfo, ZeeAction.Menu, ZeeAction.Search -> null
 }
