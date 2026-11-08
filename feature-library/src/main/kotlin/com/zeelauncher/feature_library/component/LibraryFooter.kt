@@ -1,6 +1,7 @@
 package com.zeelauncher.feature_library.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,17 +9,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextOverflow
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.SPACE
+import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_designsystem.component.ZeeButton
 import com.zeelauncher.core_designsystem.component.ZeeButtonHint
@@ -27,13 +33,18 @@ import com.zeelauncher.core_designsystem.component.ZeeHintRow
 import com.zeelauncher.core_designsystem.component.zeeBackHint
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
 import com.zeelauncher.core_designsystem.theme.Dimen
+import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.core_model.game.GamePlatform
 import com.zeelauncher.feature_library.R
 import com.zeelauncher.feature_library.viewmodel.LibraryItem
 import com.zeelauncher.core_designsystem.R as DesignR
+import kotlin.math.roundToInt
 
 private const val FOOTER_INFO_LABEL = "footer_info"
+private const val APP_INFO_HINT_LABEL = "app_info_hint"
+
+private val HintSpacing = Dimen.Dp22
 
 @Composable
 internal fun LibraryFooter(
@@ -96,7 +107,41 @@ internal fun LibraryFooter(
                 zeeBackHint(),
             ),
         )
+        SlidingHint(
+            hint = ZeeButtonHint(
+                key = stringResource(DesignR.string.zee_key_x),
+                label = stringResource(R.string.library_app_info),
+            ),
+            visible = item is LibraryItem.GameItem
+        )
     }
+}
+
+@Composable
+private fun SlidingHint(
+    hint: ZeeButtonHint,
+    visible: Boolean,
+) {
+    val progress by animateFloatAsState(
+        targetValue = if (visible) ONE_FLOAT else ZERO_FLOAT,
+        animationSpec = ZeeMotion.spec(),
+        label = APP_INFO_HINT_LABEL,
+    )
+    if (progress == ZERO_FLOAT) return
+    ZeeHintRow(
+        hints = listOf(hint),
+        modifier = Modifier
+            .layout { measurable, constraints ->
+                val placeable = measurable.measure(constraints)
+                layout((placeable.width * progress).roundToInt(), placeable.height) {
+                    placeable.placeRelative(ZERO, ZERO)
+                }
+            }
+            .graphicsLayer {
+                translationX = (size.width + ZeeDimens.ScreenPaddingHorizontal.toPx()) * (ONE_FLOAT - progress)
+            }
+            .padding(start = HintSpacing),
+    )
 }
 
 private fun GamePlatform.labelRes(): Int = when (this) {

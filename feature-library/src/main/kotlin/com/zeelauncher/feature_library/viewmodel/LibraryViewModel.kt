@@ -6,11 +6,15 @@ import com.zeelauncher.core_common.constant.MINUS_ONE
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.startup.AppReadiness
+import com.zeelauncher.core_data.usecase.AddGameToLibraryUseCase
+import com.zeelauncher.core_data.usecase.GetAppVersionUseCase
+import com.zeelauncher.core_data.usecase.GetImportableAppsUseCase
 import com.zeelauncher.core_data.usecase.LaunchGameUseCase
 import com.zeelauncher.core_data.usecase.ObserveLibrarySyncResultsUseCase
 import com.zeelauncher.core_data.usecase.ObserveLibraryUseCase
-import com.zeelauncher.core_data.usecase.OpenAppInfoUseCase
+import com.zeelauncher.core_data.usecase.RemoveGameFromLibraryUseCase
 import com.zeelauncher.core_data.usecase.SyncLibraryUseCase
+import com.zeelauncher.core_data.usecase.UninstallAppUseCase
 import com.zeelauncher.core_input.ZeeAction
 import com.zeelauncher.core_model.game.Game
 import com.zeelauncher.core_model.launch.LaunchResult
@@ -35,7 +39,11 @@ class LibraryViewModel @Inject constructor(
     observeLibrarySyncResultsUseCase: ObserveLibrarySyncResultsUseCase,
     private val syncLibraryUseCase: SyncLibraryUseCase,
     private val launchGameUseCase: LaunchGameUseCase,
-    private val openAppInfoUseCase: OpenAppInfoUseCase,
+    private val getImportableAppsUseCase: GetImportableAppsUseCase,
+    private val addGameToLibraryUseCase: AddGameToLibraryUseCase,
+    private val getAppVersionUseCase: GetAppVersionUseCase,
+    private val removeGameFromLibraryUseCase: RemoveGameFromLibraryUseCase,
+    private val uninstallAppUseCase: UninstallAppUseCase,
     private val appReadiness: AppReadiness,
 ) : ViewModel() {
 
@@ -44,6 +52,8 @@ class LibraryViewModel @Inject constructor(
 
     private val _effects = MutableSharedFlow<LibraryEffect>(extraBufferCapacity = EFFECT_BUFFER_CAPACITY)
     val effects: SharedFlow<LibraryEffect> = _effects.asSharedFlow()
+
+    private var pendingFocusPackageName: String? = null
 
     init {
         observeLibraryUseCase()
@@ -79,6 +89,10 @@ class LibraryViewModel @Inject constructor(
                 confirm()
                 true
             }
+            ZeeAction.AppInfo -> {
+                openAppInfo()
+                true
+            }
             ZeeAction.Up, ZeeAction.Down, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back, ZeeAction.Search -> false
         }
     }
@@ -93,18 +107,157 @@ class LibraryViewModel @Inject constructor(
 
     fun confirm() {
         when (val item = _uiState.value.selectedItem) {
-            is LibraryItem.GameItem -> viewModelScope.launch {
-                val result = launchGameUseCase(item.game)
-                if (result == LaunchResult.AppNotFound) _effects.emit(LibraryEffect.GameNotFound)
-            }
-            LibraryItem.ImportItem -> _effects.tryEmit(LibraryEffect.OpenImport)
+            is LibraryItem.GameItem -> launchGame(item.game)
+            LibraryItem.ImportItem -> openImport()
         }
     }
 
     fun onAppInfoClick() {
-        val item = _uiState.value.selectedItem as? LibraryItem.GameItem ?: return
-        val result = openAppInfoUseCase(item.game.packageName, item.game.activityName)
-        if (result == LaunchResult.AppNotFound) _effects.tryEmit(LibraryEffect.GameNotFound)
+        openAppInfo()
+    }
+
+    fun onAppInfoAction(action: ZeeAction): Boolean {
+        when (action) {
+            ZeeAction.Up -> moveAppInfoSelection(MINUS_ONE)
+            ZeeAction.Down -> moveAppInfoSelection(ONE)
+            ZeeAction.Confirm -> selectAppInfoOption()
+            ZeeAction.Back, ZeeAction.AppInfo -> closeAppInfo()
+            ZeeAction.Left, ZeeAction.Right, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Search -> Unit
+        }
+        return true
+    }
+
+    fun onAppInfoOptionClick(index: Int) {
+        if (index == _uiState.value.appInfo.selectedIndex) {
+            selectAppInfoOption()
+        } else {
+            _uiState.update { it.copy(appInfo = it.appInfo.copy(selectedIndex = index)) }
+        }
+    }
+
+    fun closeAppInfo() {
+        _uiState.update { it.copy(appInfo = it.appInfo.copy(isVisible = false)) }
+    }
+
+    fun onImportAction(action: ZeeAction): Boolean {
+        when (action) {
+            ZeeAction.Left -> moveImportSelection { index, _ ->
+                if (index % IMPORT_GRID_COLUMNS != ZERO) index - ONE else index
+            }
+            ZeeAction.Right -> moveImportSelection { index, size ->
+                val isLastColumn = index % IMPORT_GRID_COLUMNS == IMPORT_GRID_COLUMNS - ONE
+                if (!isLastColumn && index + ONE < size) index + ONE else index
+            }
+            ZeeAction.Up -> moveImportSelection { index, _ ->
+                if (index - IMPORT_GRID_COLUMNS >= ZERO) index - IMPORT_GRID_COLUMNS else index
+            }
+            ZeeAction.Down -> moveImportSelection { index, size ->
+                val lastRow = (size - ONE) / IMPORT_GRID_COLUMNS
+                when {
+                    index + IMPORT_GRID_COLUMNS < size -> index + IMPORT_GRID_COLUMNS
+                    index / IMPORT_GRID_COLUMNS < lastRow -> size - ONE
+                    else -> index
+                }
+            }
+            ZeeAction.Confirm -> importSelectedApp()
+            ZeeAction.Back -> closeImport()
+            ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Search, ZeeAction.AppInfo -> Unit
+        }
+        return true
+    }
+
+    fun onImportTileClick(index: Int) {
+        if (index == _uiState.value.importDialog.selectedIndex) {
+            importSelectedApp()
+        } else {
+            _uiState.update { it.copy(importDialog = it.importDialog.copy(selectedIndex = index)) }
+        }
+    }
+
+    fun closeImport() {
+        _uiState.update { it.copy(importDialog = it.importDialog.copy(isVisible = false)) }
+    }
+
+    private fun openImport() {
+        _uiState.update { it.copy(importDialog = ImportUiState(isVisible = true)) }
+        viewModelScope.launch {
+            val apps = getImportableAppsUseCase()
+            _uiState.update {
+                it.copy(importDialog = it.importDialog.copy(isLoading = false, apps = apps, selectedIndex = ZERO))
+            }
+        }
+    }
+
+    private fun importSelectedApp() {
+        val dialog = _uiState.value.importDialog
+        val app = dialog.apps.getOrNull(dialog.selectedIndex) ?: return
+        pendingFocusPackageName = app.packageName
+        closeImport()
+        viewModelScope.launch {
+            addGameToLibraryUseCase(app)
+            _effects.emit(LibraryEffect.GameImported)
+        }
+    }
+
+    private fun launchGame(game: Game) {
+        viewModelScope.launch {
+            val result = launchGameUseCase(game)
+            if (result == LaunchResult.AppNotFound) _effects.emit(LibraryEffect.GameNotFound)
+        }
+    }
+
+    private fun openAppInfo() {
+        val game = (_uiState.value.selectedItem as? LibraryItem.GameItem)?.game ?: return
+        _uiState.update {
+            it.copy(
+                appInfo = AppInfoUiState(
+                    isVisible = true,
+                    game = game,
+                    lastPlayed = relativeTimeOf(game.lastPlayedAt, System.currentTimeMillis()),
+                ),
+            )
+        }
+        viewModelScope.launch {
+            val versionName = getAppVersionUseCase(game.packageName)
+            _uiState.update {
+                if (it.appInfo.game?.packageName != game.packageName) return@update it
+                it.copy(appInfo = it.appInfo.copy(versionName = versionName))
+            }
+        }
+    }
+
+    private fun selectAppInfoOption() {
+        val appInfo = _uiState.value.appInfo
+        val game = appInfo.game ?: return
+        val option = appInfo.options.getOrNull(appInfo.selectedIndex) ?: return
+        closeAppInfo()
+        when (option) {
+            AppInfoOption.Play -> launchGame(game)
+            AppInfoOption.Remove -> viewModelScope.launch {
+                removeGameFromLibraryUseCase(game.packageName)
+                _effects.emit(LibraryEffect.GameRemoved)
+            }
+            AppInfoOption.Uninstall -> {
+                val result = uninstallAppUseCase(game.packageName)
+                if (result == LaunchResult.AppNotFound) _effects.tryEmit(LibraryEffect.GameNotFound)
+            }
+        }
+    }
+
+    private fun moveAppInfoSelection(delta: Int) {
+        _uiState.update {
+            val appInfo = it.appInfo
+            val index = (appInfo.selectedIndex + delta).coerceIn(ZERO, appInfo.options.lastIndex)
+            it.copy(appInfo = appInfo.copy(selectedIndex = index))
+        }
+    }
+
+    private fun moveImportSelection(next: (index: Int, size: Int) -> Int) {
+        _uiState.update {
+            val dialog = it.importDialog
+            if (dialog.apps.isEmpty()) return@update it
+            it.copy(importDialog = dialog.copy(selectedIndex = next(dialog.selectedIndex, dialog.apps.size)))
+        }
     }
 
     private fun moveSelection(delta: Int) {
@@ -115,8 +268,18 @@ class LibraryViewModel @Inject constructor(
 
     private fun LibraryUiState.withGames(games: List<Game>): LibraryUiState {
         val newItems = games.map { LibraryItem.GameItem(it) } + LibraryItem.ImportItem
-        val newIndex = if (isLoading) lastPlayedIndex(games) else retainedIndex(newItems)
+        val pendingIndex = pendingIndex(newItems)
+        val newIndex = when {
+            isLoading -> lastPlayedIndex(games)
+            pendingIndex != MINUS_ONE -> pendingIndex.also { pendingFocusPackageName = null }
+            else -> retainedIndex(newItems)
+        }
         return copy(isLoading = false, items = newItems, selectedIndex = newIndex)
+    }
+
+    private fun pendingIndex(newItems: List<LibraryItem>): Int {
+        val packageName = pendingFocusPackageName ?: return MINUS_ONE
+        return newItems.indexOfFirst { it is LibraryItem.GameItem && it.game.packageName == packageName }
     }
 
     private fun lastPlayedIndex(games: List<Game>): Int =

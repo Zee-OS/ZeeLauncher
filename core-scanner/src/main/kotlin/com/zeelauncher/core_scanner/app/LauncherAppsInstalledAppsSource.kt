@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
+import android.content.pm.PackageManager
 import android.os.Handler
 import android.os.Looper
 import android.os.Process
@@ -56,6 +57,14 @@ internal class LauncherAppsInstalledAppsSource @Inject constructor(
         }
         launcherApps.registerCallback(callback, Handler(Looper.getMainLooper()))
         awaitClose { launcherApps.unregisterCallback(callback) }
+    }
+
+    override suspend fun getVersionName(packageName: String): String? = withContext(ioDispatcher) {
+        try {
+            context.packageManager.getPackageInfo(packageName, ZERO).versionName
+        } catch (exception: PackageManager.NameNotFoundException) {
+            null
+        }
     }
 
     private fun LauncherActivityInfo.toInstalledApp(): InstalledApp = InstalledApp(

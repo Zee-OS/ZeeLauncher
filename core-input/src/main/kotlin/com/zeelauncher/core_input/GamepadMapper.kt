@@ -13,6 +13,7 @@ object GamepadMapper {
         KeyEvent.KEYCODE_BUTTON_R1, KeyEvent.KEYCODE_E -> ZeeAction.NextTab
         KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DPAD_CENTER -> ZeeAction.Confirm
         KeyEvent.KEYCODE_BUTTON_B, KeyEvent.KEYCODE_ESCAPE -> ZeeAction.Back
+        KeyEvent.KEYCODE_BUTTON_X, KeyEvent.KEYCODE_X -> ZeeAction.AppInfo
         KeyEvent.KEYCODE_BUTTON_Y, KeyEvent.KEYCODE_Y -> ZeeAction.Search
         else -> null
     }

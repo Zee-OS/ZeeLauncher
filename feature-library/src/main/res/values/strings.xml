@@ -2,18 +2,57 @@
     <string name="library_platform_android">ANDROID</string>
     <string name="library_play">PLAY</string>
     <string name="library_app_info">APP INFO</string>
+    <string name="library_option_remove">REMOVE FROM LIBRARY</string>
+    <string name="library_option_uninstall">UNINSTALL</string>
+
+    <string name="library_info_last_played">LAST PLAYED</string>
+    <string name="library_info_version">VERSION</string>
+
+    <string name="library_time_never">NEVER</string>
+    <string name="library_time_just_now">JUST NOW</string>
+    <string name="library_time_yesterday">YESTERDAY</string>
+
+    <plurals name="library_time_minutes_ago">
+        <item quantity="one">%d MINUTE AGO</item>
+        <item quantity="other">%d MINUTES AGO</item>
+    </plurals>
+
+    <plurals name="library_time_hours_ago">
+        <item quantity="one">%d HOUR AGO</item>
+        <item quantity="other">%d HOURS AGO</item>
+    </plurals>
+
+    <plurals name="library_time_days_ago">
+        <item quantity="one">%d DAY AGO</item>
+        <item quantity="other">%d DAYS AGO</item>
+    </plurals>
+
+    <plurals name="library_time_months_ago">
+        <item quantity="one">%d MONTH AGO</item>
+        <item quantity="other">%d MONTHS AGO</item>
+    </plurals>
+
+    <plurals name="library_time_years_ago">
+        <item quantity="one">%d YEAR AGO</item>
+        <item quantity="other">%d YEARS AGO</item>
+    </plurals>
 
     <string name="library_import_title">IMPORT GAME</string>
     <string name="library_import_subtitle">Pick from your installed apps</string>
     <string name="library_import_meta">PICK FROM YOUR INSTALLED APPS</string>
+    <string name="library_import_empty">ALL YOUR APPS ARE ALREADY IN THE LIBRARY</string>
 
     <string name="library_empty_title">NO GAMES YET</string>
     <string name="library_empty_meta">ADD YOUR FIRST GAME TO START</string>
 
     <string name="library_hint_launch">LAUNCH</string>
     <string name="library_hint_import">IMPORT</string>
+    <string name="library_hint_cancel">CANCEL</string>
+    <string name="library_hint_select">SELECT</string>
+    <string name="library_hint_close">CLOSE</string>
 
-    <string name="library_toast_import">OPEN IMPORT</string>
+    <string name="library_toast_game_imported">GAME IMPORTED</string>
+    <string name="library_toast_game_removed">REMOVED FROM LIBRARY</string>
     <string name="library_toast_game_not_found">GAME NOT FOUND</string>
 
     <plurals name="library_toast_games_added">

@@ -8,4 +8,6 @@ internal interface InstalledAppsDataSource {
     suspend fun getInstalledApps(): List<InstalledApp>
 
     fun observeChanges(): Flow<Unit>
+
+    suspend fun getVersionName(packageName: String): String?
 }

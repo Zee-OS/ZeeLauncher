@@ -8,6 +8,12 @@ import com.zeelauncher.core_data.repository.InstalledAppsRepository
 import com.zeelauncher.core_data.repository.InstalledAppsRepositoryImpl
 import com.zeelauncher.core_data.repository.LibraryRepository
 import com.zeelauncher.core_data.repository.LibraryRepositoryImpl
+import com.zeelauncher.core_data.usecase.AddGameToLibraryUseCase
+import com.zeelauncher.core_data.usecase.AddGameToLibraryUseCaseImpl
+import com.zeelauncher.core_data.usecase.GetAppVersionUseCase
+import com.zeelauncher.core_data.usecase.GetAppVersionUseCaseImpl
+import com.zeelauncher.core_data.usecase.GetImportableAppsUseCase
+import com.zeelauncher.core_data.usecase.GetImportableAppsUseCaseImpl
 import com.zeelauncher.core_data.usecase.LaunchGameUseCase
 import com.zeelauncher.core_data.usecase.LaunchGameUseCaseImpl
 import com.zeelauncher.core_data.usecase.ObserveLibrarySyncResultsUseCase
@@ -16,8 +22,12 @@ import com.zeelauncher.core_data.usecase.ObserveLibraryUseCase
 import com.zeelauncher.core_data.usecase.ObserveLibraryUseCaseImpl
 import com.zeelauncher.core_data.usecase.OpenAppInfoUseCase
 import com.zeelauncher.core_data.usecase.OpenAppInfoUseCaseImpl
+import com.zeelauncher.core_data.usecase.RemoveGameFromLibraryUseCase
+import com.zeelauncher.core_data.usecase.RemoveGameFromLibraryUseCaseImpl
 import com.zeelauncher.core_data.usecase.SyncLibraryUseCase
 import com.zeelauncher.core_data.usecase.SyncLibraryUseCaseImpl
+import com.zeelauncher.core_data.usecase.UninstallAppUseCase
+import com.zeelauncher.core_data.usecase.UninstallAppUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -55,4 +65,21 @@ internal abstract class DataModule {
 
     @Binds
     abstract fun bindsOpenAppInfoUseCase(impl: OpenAppInfoUseCaseImpl): OpenAppInfoUseCase
+
+    @Binds
+    abstract fun bindsGetImportableAppsUseCase(impl: GetImportableAppsUseCaseImpl): GetImportableAppsUseCase
+
+    @Binds
+    abstract fun bindsAddGameToLibraryUseCase(impl: AddGameToLibraryUseCaseImpl): AddGameToLibraryUseCase
+
+    @Binds
+    abstract fun bindsRemoveGameFromLibraryUseCase(
+        impl: RemoveGameFromLibraryUseCaseImpl,
+    ): RemoveGameFromLibraryUseCase
+
+    @Binds
+    abstract fun bindsGetAppVersionUseCase(impl: GetAppVersionUseCaseImpl): GetAppVersionUseCase
+
+    @Binds
+    abstract fun bindsUninstallAppUseCase(impl: UninstallAppUseCaseImpl): UninstallAppUseCase
 }

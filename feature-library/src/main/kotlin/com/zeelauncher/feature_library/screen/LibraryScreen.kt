@@ -18,14 +18,20 @@ import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.ZERO
+import com.zeelauncher.core_designsystem.component.ZeeDrawer
+import com.zeelauncher.core_designsystem.component.ZeeModal
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
+import com.zeelauncher.core_designsystem.overlay.ZeeOverlay
+import com.zeelauncher.core_designsystem.overlay.isOverlayActive
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.toast.LocalZeeToast
 import com.zeelauncher.core_designsystem.toast.ZeeToastHostState
 import com.zeelauncher.core_designsystem.toast.ZeeToastIcon
 import com.zeelauncher.core_input.ObserveZeeActions
 import com.zeelauncher.feature_library.R
+import com.zeelauncher.feature_library.component.AppInfoDrawerContent
 import com.zeelauncher.feature_library.component.GameCarousel
+import com.zeelauncher.feature_library.component.ImportDialogContent
 import com.zeelauncher.feature_library.component.LibraryFooter
 import com.zeelauncher.feature_library.viewmodel.LibraryEffect
 import com.zeelauncher.feature_library.viewmodel.LibraryUiState
@@ -59,6 +65,28 @@ internal fun LibraryRoute(
         onPlayClick = viewModel::confirm,
         onAppInfoClick = viewModel::onAppInfoClick,
     )
+
+    ZeeOverlay(visible = uiState.importDialog.isVisible) {
+        val isActive = isOverlayActive
+        ObserveZeeActions { action -> isActive && viewModel.onImportAction(action) }
+        ZeeModal(onDismiss = viewModel::closeImport) {
+            ImportDialogContent(
+                state = uiState.importDialog,
+                onTileClick = viewModel::onImportTileClick,
+            )
+        }
+    }
+
+    ZeeOverlay(visible = uiState.appInfo.isVisible) {
+        val isActive = isOverlayActive
+        ObserveZeeActions { action -> isActive && viewModel.onAppInfoAction(action) }
+        ZeeDrawer(onDismiss = viewModel::closeAppInfo) {
+            AppInfoDrawerContent(
+                state = uiState.appInfo,
+                onOptionClick = viewModel::onAppInfoOptionClick,
+            )
+        }
+    }
 }
 
 @Composable
@@ -122,7 +150,8 @@ private fun LibraryContent(
 
 private fun ZeeToastHostState.showEffect(effect: LibraryEffect, context: Context) {
     when (effect) {
-        LibraryEffect.OpenImport -> show(context.getString(R.string.library_toast_import), ZeeToastIcon.Check)
+        LibraryEffect.GameImported -> show(context.getString(R.string.library_toast_game_imported), ZeeToastIcon.Check)
+        LibraryEffect.GameRemoved -> show(context.getString(R.string.library_toast_game_removed), ZeeToastIcon.Close)
         LibraryEffect.GameNotFound -> show(context.getString(R.string.library_toast_game_not_found), ZeeToastIcon.Close)
         is LibraryEffect.LibraryUpdated -> {
             if (effect.addedCount > ZERO) {

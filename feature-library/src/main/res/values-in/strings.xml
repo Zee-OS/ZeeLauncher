@@ -1,4 +1,35 @@
 <resources>
+    <string name="library_option_remove">HAPUS DARI LIBRARY</string>
+    <string name="library_info_last_played">TERAKHIR DIMAINKAN</string>
+    <string name="library_info_version">VERSI</string>
+
+    <string name="library_time_never">BELUM PERNAH</string>
+    <string name="library_time_just_now">BARU SAJA</string>
+    <string name="library_time_yesterday">KEMARIN</string>
+
+    <plurals name="library_time_minutes_ago">
+        <item quantity="other">%d MENIT LALU</item>
+    </plurals>
+
+    <plurals name="library_time_hours_ago">
+        <item quantity="other">%d JAM LALU</item>
+    </plurals>
+
+    <plurals name="library_time_days_ago">
+        <item quantity="other">%d HARI LALU</item>
+    </plurals>
+
+    <plurals name="library_time_months_ago">
+        <item quantity="other">%d BULAN LALU</item>
+    </plurals>
+
+    <plurals name="library_time_years_ago">
+        <item quantity="other">%d TAHUN LALU</item>
+    </plurals>
+
+    <string name="library_import_empty">SEMUA APP SUDAH ADA DI LIBRARY</string>
+    <string name="library_toast_game_imported">GAME DITAMBAHKAN</string>
+    <string name="library_toast_game_removed">DIHAPUS DARI LIBRARY</string>
     <string name="library_toast_game_not_found">GAME TIDAK DITEMUKAN</string>
 
     <plurals name="library_toast_games_added">

@@ -9,5 +9,6 @@ enum class ZeeAction {
     NextTab,
     Confirm,
     Back,
+    AppInfo,
     Search,
 }

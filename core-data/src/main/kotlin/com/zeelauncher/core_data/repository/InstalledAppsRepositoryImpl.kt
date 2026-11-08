@@ -13,4 +13,7 @@ internal class InstalledAppsRepositoryImpl @Inject constructor(
         installedAppsDataSource.getInstalledApps().sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.label })
 
     override fun observeChanges(): Flow<Unit> = installedAppsDataSource.observeChanges()
+
+    override suspend fun getVersionName(packageName: String): String? =
+        installedAppsDataSource.getVersionName(packageName)
 }

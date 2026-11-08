@@ -12,4 +12,7 @@ internal class InstalledAppsDataSourceImpl @Inject constructor(
     override suspend fun getInstalledApps(): List<InstalledApp> = installedAppsSource.getInstalledApps()
 
     override fun observeChanges(): Flow<Unit> = installedAppsSource.observeChanges()
+
+    override suspend fun getVersionName(packageName: String): String? =
+        installedAppsSource.getVersionName(packageName)
 }
