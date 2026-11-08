@@ -36,6 +36,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import androidx.activity.addCallback
 import com.zeelauncher.core_input.ZeeAction
+import android.content.Context
+import com.zeelauncher.core_common.locale.AppLocale
 
 private const val SPLASH_TIMEOUT_MILLIS = 3_000L
 
@@ -49,6 +51,10 @@ class MainActivity : ComponentActivity() {
     lateinit var homeRequests: HomeRequests
 
     private val input = ZeeInputDispatcher()
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocale.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()

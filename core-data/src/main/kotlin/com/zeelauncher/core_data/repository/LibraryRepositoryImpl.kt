@@ -33,11 +33,9 @@ internal class LibraryRepositoryImpl @Inject constructor(
 
     override fun observeSyncResults(): Flow<LibrarySyncResult> = syncResults.asSharedFlow()
 
-    override suspend fun syncLibrary() {
-        syncMutex.withLock { syncLocked() }
-    }
+    override suspend fun syncLibrary(): LibrarySyncResult = syncMutex.withLock { syncLocked() }
 
-    private suspend fun syncLocked() {
+    private suspend fun syncLocked(): LibrarySyncResult {
         val installed = installedAppsDataSource.getInstalledApps().associateBy { it.packageName }
         val hidden = libraryLocalDataSource.getHiddenPackageNames()
         val current = libraryLocalDataSource.getGames()
@@ -60,6 +58,7 @@ internal class LibraryRepositoryImpl @Inject constructor(
 
         val result = LibrarySyncResult(addedCount = added.size, removedCount = removed.size)
         if (result.hasChanges && !isInitialPopulation) syncResults.emit(result)
+        return result
     }
 
     override suspend fun markPlayed(packageName: String) {

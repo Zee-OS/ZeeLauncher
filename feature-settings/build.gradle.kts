@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "com.zeelauncher.feature_settings"
 }
+
+dependencies {
+    implementation(libs.androidx.activity.compose)
+}

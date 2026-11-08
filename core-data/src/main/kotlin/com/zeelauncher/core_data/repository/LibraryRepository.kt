@@ -11,7 +11,7 @@ interface LibraryRepository {
 
     fun observeSyncResults(): Flow<LibrarySyncResult>
 
-    suspend fun syncLibrary()
+    suspend fun syncLibrary(): LibrarySyncResult
 
     suspend fun markPlayed(packageName: String)
 

@@ -1,0 +1,41 @@
+<resources>
+    <string name="settings_section_general">UMUM</string>
+    <string name="settings_section_about">TENTANG</string>
+
+    <string name="settings_status_on">AKTIF</string>
+    <string name="settings_status_off">MATI</string>
+
+    <string name="settings_default_launcher_title">Launcher default</string>
+    <string name="settings_default_launcher_subtitle">Jadikan ZeeLauncher sebagai layar utama</string>
+    <string name="settings_default_launcher_set">JADIKAN DEFAULT</string>
+    <string name="settings_default_launcher_change">UBAH</string>
+
+    <string name="settings_language_title">Bahasa</string>
+    <string name="settings_language_subtitle">Bahasa yang dipakai di ZeeLauncher</string>
+
+    <string name="settings_sound_title">Efek suara</string>
+    <string name="settings_sound_subtitle">Putar suara saat navigasi</string>
+
+    <string name="settings_rescan_title">Pindai ulang game</string>
+    <string name="settings_rescan_subtitle">Cari game yang baru terpasang</string>
+    <string name="settings_rescan_action">PINDAI</string>
+    <string name="settings_rescan_running">MEMINDAI</string>
+
+    <string name="settings_version_title">Versi</string>
+    <string name="settings_version_subtitle">Versi ZeeLauncher yang terpasang</string>
+
+    <string name="settings_licenses_title">Lisensi open source</string>
+    <string name="settings_licenses_subtitle">Library dan font yang dipakai ZeeLauncher</string>
+    <string name="settings_licenses_action">LIHAT</string>
+    <string name="settings_licenses_dialog_title">LISENSI OPEN SOURCE</string>
+
+    <string name="settings_toast_library_up_to_date">LIBRARY SUDAH TERBARU</string>
+
+    <plurals name="settings_toast_games_added">
+        <item quantity="other">%d GAME DITAMBAHKAN</item>
+    </plurals>
+
+    <plurals name="settings_toast_games_removed">
+        <item quantity="other">%d GAME DIHAPUS</item>
+    </plurals>
+</resources>
