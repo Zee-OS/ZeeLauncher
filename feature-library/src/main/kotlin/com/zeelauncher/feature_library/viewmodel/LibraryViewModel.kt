@@ -16,6 +16,7 @@ import com.zeelauncher.core_data.usecase.RemoveGameFromLibraryUseCase
 import com.zeelauncher.core_data.usecase.SyncLibraryUseCase
 import com.zeelauncher.core_data.usecase.UninstallAppUseCase
 import com.zeelauncher.core_input.ZeeAction
+import com.zeelauncher.core_input.moveInGrid
 import com.zeelauncher.core_model.game.Game
 import com.zeelauncher.core_model.launch.LaunchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -141,24 +142,7 @@ class LibraryViewModel @Inject constructor(
 
     fun onImportAction(action: ZeeAction): Boolean {
         when (action) {
-            ZeeAction.Left -> moveImportSelection { index, _ ->
-                if (index % IMPORT_GRID_COLUMNS != ZERO) index - ONE else index
-            }
-            ZeeAction.Right -> moveImportSelection { index, size ->
-                val isLastColumn = index % IMPORT_GRID_COLUMNS == IMPORT_GRID_COLUMNS - ONE
-                if (!isLastColumn && index + ONE < size) index + ONE else index
-            }
-            ZeeAction.Up -> moveImportSelection { index, _ ->
-                if (index - IMPORT_GRID_COLUMNS >= ZERO) index - IMPORT_GRID_COLUMNS else index
-            }
-            ZeeAction.Down -> moveImportSelection { index, size ->
-                val lastRow = (size - ONE) / IMPORT_GRID_COLUMNS
-                when {
-                    index + IMPORT_GRID_COLUMNS < size -> index + IMPORT_GRID_COLUMNS
-                    index / IMPORT_GRID_COLUMNS < lastRow -> size - ONE
-                    else -> index
-                }
-            }
+            ZeeAction.Left, ZeeAction.Right, ZeeAction.Up, ZeeAction.Down -> moveImportSelection(action)
             ZeeAction.Confirm -> importSelectedApp()
             ZeeAction.Back -> closeImport()
             ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Search, ZeeAction.AppInfo -> Unit
@@ -252,11 +236,12 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun moveImportSelection(next: (index: Int, size: Int) -> Int) {
+    private fun moveImportSelection(action: ZeeAction) {
         _uiState.update {
             val dialog = it.importDialog
             if (dialog.apps.isEmpty()) return@update it
-            it.copy(importDialog = dialog.copy(selectedIndex = next(dialog.selectedIndex, dialog.apps.size)))
+            val index = action.moveInGrid(dialog.selectedIndex, dialog.apps.size, IMPORT_GRID_COLUMNS) ?: return@update it
+            it.copy(importDialog = dialog.copy(selectedIndex = index))
         }
     }
 

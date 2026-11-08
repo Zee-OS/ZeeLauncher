@@ -11,6 +11,7 @@ import android.os.Process
 import android.os.UserHandle
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.dispatcher.IoDispatcher
+import com.zeelauncher.core_model.app.AppCategory
 import com.zeelauncher.core_model.app.InstalledApp
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
@@ -67,12 +68,28 @@ internal class LauncherAppsInstalledAppsSource @Inject constructor(
         }
     }
 
-    private fun LauncherActivityInfo.toInstalledApp(): InstalledApp = InstalledApp(
-        packageName = applicationInfo.packageName,
-        activityName = componentName.className,
-        label = label.toString(),
-        isGame = applicationInfo.isGame(),
-    )
+    private fun LauncherActivityInfo.toInstalledApp(): InstalledApp {
+        val isGame = applicationInfo.isGame()
+        return InstalledApp(
+            packageName = applicationInfo.packageName,
+            activityName = componentName.className,
+            label = label.toString(),
+            isGame = isGame,
+            category = if (isGame) AppCategory.Game else applicationInfo.toAppCategory(),
+        )
+    }
+
+    private fun ApplicationInfo.toAppCategory(): AppCategory = when (category) {
+        ApplicationInfo.CATEGORY_GAME -> AppCategory.Game
+        ApplicationInfo.CATEGORY_AUDIO -> AppCategory.Audio
+        ApplicationInfo.CATEGORY_VIDEO -> AppCategory.Video
+        ApplicationInfo.CATEGORY_IMAGE -> AppCategory.Image
+        ApplicationInfo.CATEGORY_SOCIAL -> AppCategory.Social
+        ApplicationInfo.CATEGORY_NEWS -> AppCategory.News
+        ApplicationInfo.CATEGORY_MAPS -> AppCategory.Maps
+        ApplicationInfo.CATEGORY_PRODUCTIVITY -> AppCategory.Productivity
+        else -> AppCategory.Undefined
+    }
 
     @Suppress("DEPRECATION")
     private fun ApplicationInfo.isGame(): Boolean =

@@ -14,8 +14,12 @@ import com.zeelauncher.core_data.usecase.GetAppVersionUseCase
 import com.zeelauncher.core_data.usecase.GetAppVersionUseCaseImpl
 import com.zeelauncher.core_data.usecase.GetImportableAppsUseCase
 import com.zeelauncher.core_data.usecase.GetImportableAppsUseCaseImpl
+import com.zeelauncher.core_data.usecase.LaunchAppUseCase
+import com.zeelauncher.core_data.usecase.LaunchAppUseCaseImpl
 import com.zeelauncher.core_data.usecase.LaunchGameUseCase
 import com.zeelauncher.core_data.usecase.LaunchGameUseCaseImpl
+import com.zeelauncher.core_data.usecase.ObserveInstalledAppsUseCase
+import com.zeelauncher.core_data.usecase.ObserveInstalledAppsUseCaseImpl
 import com.zeelauncher.core_data.usecase.ObserveLibrarySyncResultsUseCase
 import com.zeelauncher.core_data.usecase.ObserveLibrarySyncResultsUseCaseImpl
 import com.zeelauncher.core_data.usecase.ObserveLibraryUseCase
@@ -82,4 +86,10 @@ internal abstract class DataModule {
 
     @Binds
     abstract fun bindsUninstallAppUseCase(impl: UninstallAppUseCaseImpl): UninstallAppUseCase
+
+    @Binds
+    abstract fun bindsObserveInstalledAppsUseCase(impl: ObserveInstalledAppsUseCaseImpl): ObserveInstalledAppsUseCase
+
+    @Binds
+    abstract fun bindsLaunchAppUseCase(impl: LaunchAppUseCaseImpl): LaunchAppUseCase
 }

@@ -5,4 +5,5 @@ data class InstalledApp(
     val activityName: String,
     val label: String,
     val isGame: Boolean,
+    val category: AppCategory = AppCategory.Undefined,
 )

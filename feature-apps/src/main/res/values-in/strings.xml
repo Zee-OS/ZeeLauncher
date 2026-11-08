@@ -1,0 +1,9 @@
+<resources>
+    <string name="apps_toast_app_not_found">APP TIDAK DITEMUKAN</string>
+
+    <string name="apps_category_image">GAMBAR</string>
+    <string name="apps_category_social">SOSIAL</string>
+    <string name="apps_category_news">BERITA</string>
+    <string name="apps_category_maps">PETA</string>
+    <string name="apps_category_productivity">PRODUKTIVITAS</string>
+</resources>
