@@ -12,6 +12,7 @@ import com.zeelauncher.core_common.constant.TWO_FLOAT
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_designsystem.modifier.noRippleClickable
+import com.zeelauncher.core_designsystem.sound.tapSound
 import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.feature_library.viewmodel.LibraryItem
@@ -35,7 +36,7 @@ internal fun GameCarousel(
         content = {
             items.forEachIndexed { index, item ->
                 val focus = focusOf(index, position)
-                val clickModifier = Modifier.noRippleClickable { onCardClick(index) }
+                val clickModifier = Modifier.noRippleClickable(index.tapSound(position.roundToInt())) { onCardClick(index) }
                 when (item) {
                     is LibraryItem.GameItem -> GameCard(item.game, focus, clickModifier)
                     LibraryItem.ImportItem -> ImportCard(focus, clickModifier)

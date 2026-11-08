@@ -29,7 +29,7 @@ fun ZeeModal(
                 .hardShadow(ZeeDimens.ShadowFocused, colors.accent)
                 .background(colors.background)
                 .border(ZeeDimens.BorderThick, colors.content)
-                .noRippleClickable {}
+                .noRippleClickable(null) {}
                 .padding(ZeeDimens.ModalPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             content = content,

@@ -15,6 +15,7 @@ import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_designsystem.R
 import com.zeelauncher.core_designsystem.modifier.hardShadow
 import com.zeelauncher.core_designsystem.modifier.noRippleClickable
+import com.zeelauncher.core_designsystem.sound.ZeeSoundEffect
 import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
@@ -32,7 +33,7 @@ fun ZeeTab(
             .hardShadow(ZeeDimens.ShadowMedium, colors.shadow)
             .background(if (selected) colors.accent else colors.background)
             .border(ZeeDimens.BorderThin, colors.content)
-            .noRippleClickable(onClick)
+            .noRippleClickable(ZeeSoundEffect.Tab, onClick)
             .padding(horizontal = Dimen.Dp17, vertical = Dimen.Dp10),
     ) {
         Text(
@@ -60,7 +61,7 @@ fun ZeeTabRow(
     ) {
         ZeeKeyBadge(
             label = stringResource(R.string.zee_key_l1),
-            modifier = Modifier.noRippleClickable(onPrevious),
+            modifier = Modifier.noRippleClickable(ZeeSoundEffect.Tab, onPrevious),
             minWidth = ZeeDimens.BadgeWideMinWidth,
         )
         labels.forEachIndexed { index, label ->
@@ -68,7 +69,7 @@ fun ZeeTabRow(
         }
         ZeeKeyBadge(
             label = stringResource(R.string.zee_key_r1),
-            modifier = Modifier.noRippleClickable(onNext),
+            modifier = Modifier.noRippleClickable(ZeeSoundEffect.Tab, onNext),
             minWidth = ZeeDimens.BadgeWideMinWidth,
         )
     }

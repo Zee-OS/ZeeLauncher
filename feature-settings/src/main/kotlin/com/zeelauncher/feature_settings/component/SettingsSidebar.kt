@@ -17,6 +17,7 @@ import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_designsystem.modifier.hardShadow
 import com.zeelauncher.core_designsystem.modifier.noRippleClickable
+import com.zeelauncher.core_designsystem.sound.ZeeSoundEffect
 import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
@@ -68,7 +69,7 @@ private fun SidebarItem(
     Row(
         modifier = surface
             .border(ZeeDimens.BorderThin, colors.content)
-            .noRippleClickable(onClick)
+            .noRippleClickable(ZeeSoundEffect.Move, onClick)
             .padding(horizontal = Dimen.Dp30),
         verticalAlignment = Alignment.CenterVertically,
     ) {

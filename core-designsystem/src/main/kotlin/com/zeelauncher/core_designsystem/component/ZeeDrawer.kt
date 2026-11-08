@@ -53,7 +53,7 @@ fun AnimatedVisibilityScope.ZeeDrawer(
                         size = Size(ZeeDimens.BorderThick.toPx(), size.height),
                     )
                 }
-                .noRippleClickable {}
+                .noRippleClickable(null) {}
                 .padding(ZeeDimens.DrawerPadding),
             content = content,
         )

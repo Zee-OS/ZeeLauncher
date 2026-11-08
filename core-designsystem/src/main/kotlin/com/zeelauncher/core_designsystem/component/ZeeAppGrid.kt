@@ -31,6 +31,7 @@ import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_designsystem.modifier.noRippleClickable
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
+import com.zeelauncher.core_designsystem.sound.tapSound
 import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.core_model.app.AppIcon
@@ -92,7 +93,7 @@ fun ZeeAppGrid(
                 app = app,
                 selected = index == selectedIndex,
                 spec = spec,
-                modifier = Modifier.noRippleClickable { onTileClick(index) },
+                modifier = Modifier.noRippleClickable(index.tapSound(selectedIndex)) { onTileClick(index) },
             )
         }
     }

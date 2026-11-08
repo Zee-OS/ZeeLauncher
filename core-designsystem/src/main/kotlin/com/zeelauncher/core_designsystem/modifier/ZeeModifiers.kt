@@ -2,6 +2,7 @@ package com.zeelauncher.core_designsystem.modifier
 
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
@@ -15,6 +16,8 @@ import androidx.compose.ui.unit.Dp
 import com.zeelauncher.core_common.constant.TWO_FLOAT
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
+import com.zeelauncher.core_designsystem.sound.LocalZeeSound
+import com.zeelauncher.core_designsystem.sound.ZeeSoundEffect
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import kotlin.math.roundToInt
 
@@ -41,7 +44,15 @@ fun Modifier.dashedBorder(width: Dp, color: Color): Modifier = drawWithContent {
 }
 
 fun Modifier.noRippleClickable(onClick: () -> Unit): Modifier =
-    clickable(interactionSource = null, indication = null, onClick = onClick)
+    noRippleClickable(ZeeSoundEffect.Select, onClick)
+
+fun Modifier.noRippleClickable(sound: ZeeSoundEffect?, onClick: () -> Unit): Modifier = composed {
+    val playback = LocalZeeSound.current
+    clickable(interactionSource = null, indication = null) {
+        sound?.let(playback::play)
+        onClick()
+    }
+}
 
 fun Modifier.revealHeight(fraction: Float): Modifier = clipToBounds().layout { measurable, constraints ->
     val placeable = measurable.measure(constraints)

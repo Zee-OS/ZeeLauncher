@@ -25,6 +25,7 @@ dependencies {
     implementation(projects.featureSettings)
     implementation(projects.coreScanner)
     implementation(projects.coreDatabase)
+    implementation(projects.coreData)
 
     implementation(libs.coil.compose)
     implementation(libs.androidx.core.ktx)

@@ -38,6 +38,9 @@ import androidx.activity.addCallback
 import com.zeelauncher.core_input.ZeeAction
 import android.content.Context
 import com.zeelauncher.core_common.locale.AppLocale
+import com.dwiaziprasetya.zeelauncher.sound.attachInputSounds
+import com.zeelauncher.core_data.usecase.ObserveSoundEnabledUseCase
+import com.zeelauncher.core_designsystem.sound.LocalZeeSound
 
 private const val SPLASH_TIMEOUT_MILLIS = 3_000L
 
@@ -50,6 +53,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var homeRequests: HomeRequests
 
+    @Inject
+    lateinit var observeSoundEnabledUseCase: ObserveSoundEnabledUseCase
+
     private val input = ZeeInputDispatcher()
 
     override fun attachBaseContext(newBase: Context) {
@@ -58,11 +64,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
+
         holdSplashUntilReady(splashScreen)
         enableEdgeToEdge()
         hideSystemBars()
         onBackPressedDispatcher.addCallback(this) { input.dispatch(ZeeAction.Back) }
+
+        val sounds = attachInputSounds(input, observeSoundEnabledUseCase())
         setContent {
             val overlayHost = remember { ZeeOverlayHostState() }
             val toastHost = remember { ZeeToastHostState() }
@@ -70,6 +80,7 @@ class MainActivity : ComponentActivity() {
                 LocalZeeInput provides input,
                 LocalZeeOverlayHost provides overlayHost,
                 LocalZeeToast provides toastHost,
+                LocalZeeSound provides sounds,
             ) {
                 ZeeLauncherTheme {
                     ZeeCanvas {
