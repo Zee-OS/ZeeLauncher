@@ -1,5 +1,6 @@
 package com.dwiaziprasetya.zeelauncher
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.KeyEvent
@@ -18,6 +19,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.dwiaziprasetya.zeelauncher.navigation.ZeeRootNavHost
 import com.dwiaziprasetya.zeelauncher.shell.ControllerToasts
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
+import com.zeelauncher.core_common.home.HomeRequests
 import com.zeelauncher.core_common.startup.AppReadiness
 import com.zeelauncher.core_designsystem.layout.ZeeCanvas
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
@@ -32,6 +34,8 @@ import com.zeelauncher.core_input.LocalZeeInput
 import com.zeelauncher.core_input.ZeeInputDispatcher
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import androidx.activity.addCallback
+import com.zeelauncher.core_input.ZeeAction
 
 private const val SPLASH_TIMEOUT_MILLIS = 3_000L
 
@@ -41,6 +45,9 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var appReadiness: AppReadiness
 
+    @Inject
+    lateinit var homeRequests: HomeRequests
+
     private val input = ZeeInputDispatcher()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +56,7 @@ class MainActivity : ComponentActivity() {
         holdSplashUntilReady(splashScreen)
         enableEdgeToEdge()
         hideSystemBars()
+        onBackPressedDispatcher.addCallback(this) { input.dispatch(ZeeAction.Back) }
         setContent {
             val overlayHost = remember { ZeeOverlayHostState() }
             val toastHost = remember { ZeeToastHostState() }
@@ -60,7 +68,7 @@ class MainActivity : ComponentActivity() {
                 ZeeLauncherTheme {
                     ZeeCanvas {
                         Box {
-                            ZeeRootNavHost()
+                            ZeeRootNavHost(homeRequests = homeRequests.requests)
                             ZeeOverlayHost(overlayHost)
                             ZeeToastHost(toastHost)
                         }
@@ -69,6 +77,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.hasCategory(Intent.CATEGORY_HOME)) homeRequests.request()
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean =

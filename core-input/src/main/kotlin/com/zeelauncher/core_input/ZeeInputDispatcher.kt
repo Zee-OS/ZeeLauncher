@@ -19,11 +19,14 @@ class ZeeInputDispatcher {
         handlers.remove(handler)
     }
 
+    fun dispatch(action: ZeeAction): Boolean =
+        handlers.toList().asReversed().any { it.onAction(action) }
+
     fun dispatch(event: KeyEvent): Boolean {
         val action = GamepadMapper.toAction(event.keyCode) ?: return false
         return when (event.action) {
             KeyEvent.ACTION_DOWN -> {
-                val handled = handlers.toList().asReversed().any { it.onAction(action) }
+                val handled = dispatch(action)
                 if (handled) consumedKeys.add(event.keyCode)
                 handled
             }

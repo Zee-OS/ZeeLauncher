@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.zeelauncher.core_common.constant.MINUS_ONE
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ZERO
+import com.zeelauncher.core_common.home.HomeRequests
 import com.zeelauncher.core_common.startup.AppReadiness
 import com.zeelauncher.core_data.usecase.AddGameToLibraryUseCase
 import com.zeelauncher.core_data.usecase.GetAppVersionUseCase
@@ -46,6 +47,7 @@ class LibraryViewModel @Inject constructor(
     private val removeGameFromLibraryUseCase: RemoveGameFromLibraryUseCase,
     private val uninstallAppUseCase: UninstallAppUseCase,
     private val appReadiness: AppReadiness,
+    homeRequests: HomeRequests,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LibraryUiState())
@@ -68,6 +70,10 @@ class LibraryViewModel @Inject constructor(
             .onEach { result ->
                 _effects.emit(LibraryEffect.LibraryUpdated(result.addedCount, result.removedCount))
             }
+            .launchIn(viewModelScope)
+
+        homeRequests.requests
+            .onEach { closeOverlays() }
             .launchIn(viewModelScope)
     }
 
@@ -160,6 +166,15 @@ class LibraryViewModel @Inject constructor(
 
     fun closeImport() {
         _uiState.update { it.copy(importDialog = it.importDialog.copy(isVisible = false)) }
+    }
+
+    private fun closeOverlays() {
+        _uiState.update {
+            it.copy(
+                importDialog = it.importDialog.copy(isVisible = false),
+                appInfo = it.appInfo.copy(isVisible = false),
+            )
+        }
     }
 
     private fun openImport() {
