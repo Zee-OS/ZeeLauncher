@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "com.zeelauncher.feature_library"
 }
+
+dependencies {
+    testImplementation(libs.junit)
+}

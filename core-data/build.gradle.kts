@@ -14,4 +14,7 @@ dependencies {
     implementation(projects.coreDatastore)
     implementation(projects.coreScanner)
     implementation(projects.coreLaunch)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
