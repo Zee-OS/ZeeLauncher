@@ -1,14 +1,14 @@
 <resources>
-    <string name="apps_open">OPEN</string>
+    <string name="apps_open" translatable="false">OPEN</string>
     <string name="apps_toast_app_not_found">APP NOT FOUND</string>
 
-    <string name="apps_category_game">GAME</string>
-    <string name="apps_category_audio">AUDIO</string>
-    <string name="apps_category_video">VIDEO</string>
+    <string name="apps_category_game" translatable="false">GAME</string>
+    <string name="apps_category_audio" translatable="false">AUDIO</string>
+    <string name="apps_category_video" translatable="false">VIDEO</string>
     <string name="apps_category_image">IMAGE</string>
     <string name="apps_category_social">SOCIAL</string>
     <string name="apps_category_news">NEWS</string>
     <string name="apps_category_maps">MAPS</string>
     <string name="apps_category_productivity">PRODUCTIVITY</string>
-    <string name="apps_category_app">APP</string>
+    <string name="apps_category_app" translatable="false">APP</string>
 </resources>

@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.content.res.Resources
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -64,6 +66,7 @@ internal fun SettingsRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val resources = LocalResources.current
     val toast = LocalZeeToast.current
     val roleRequest = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         viewModel.refresh()
@@ -88,7 +91,7 @@ internal fun SettingsRoute(
                     }
                 }
                 SettingsEffect.Recreate -> context.findActivity()?.recreate()
-                is SettingsEffect.LibraryRescanned -> toast.showRescanResult(effect.result, context)
+                is SettingsEffect.LibraryRescanned -> toast.showRescanResult(effect.result, resources)
             }
         }
     }
@@ -181,20 +184,20 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-private fun ZeeToastHostState.showRescanResult(result: LibrarySyncResult, context: Context) {
+private fun ZeeToastHostState.showRescanResult(result: LibrarySyncResult, resources: Resources) {
     if (!result.hasChanges) {
-        show(context.getString(R.string.settings_toast_library_up_to_date), ZeeToastIcon.Check)
+        show(resources.getString(R.string.settings_toast_library_up_to_date), ZeeToastIcon.Check)
         return
     }
     if (result.addedCount > ZERO) {
         show(
-            context.resources.getQuantityString(R.plurals.settings_toast_games_added, result.addedCount, result.addedCount),
+            resources.getQuantityString(R.plurals.settings_toast_games_added, result.addedCount, result.addedCount),
             ZeeToastIcon.Check,
         )
     }
     if (result.removedCount > ZERO) {
         show(
-            context.resources.getQuantityString(R.plurals.settings_toast_games_removed, result.removedCount, result.removedCount),
+            resources.getQuantityString(R.plurals.settings_toast_games_removed, result.removedCount, result.removedCount),
             ZeeToastIcon.Close,
         )
     }

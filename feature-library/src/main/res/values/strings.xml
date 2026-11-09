@@ -1,9 +1,9 @@
-<resources>
-    <string name="library_platform_android">ANDROID</string>
-    <string name="library_play">PLAY</string>
-    <string name="library_app_info">APP INFO</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="library_platform_android" translatable="false">ANDROID</string>
+    <string name="library_play" translatable="false">PLAY</string>
+    <string name="library_app_info" translatable="false">APP INFO</string>
     <string name="library_option_remove">REMOVE FROM LIBRARY</string>
-    <string name="library_option_uninstall">UNINSTALL</string>
+    <string name="library_option_uninstall" translatable="false">UNINSTALL</string>
 
     <string name="library_info_last_played">LAST PLAYED</string>
     <string name="library_info_version">VERSION</string>
@@ -37,7 +37,7 @@
         <item quantity="other">%d YEARS AGO</item>
     </plurals>
 
-    <string name="library_import_title">IMPORT GAME</string>
+    <string name="library_import_title" translatable="false">IMPORT GAME</string>
     <string name="library_import_subtitle">Pick from your installed apps</string>
     <string name="library_import_meta">PICK FROM YOUR INSTALLED APPS</string>
     <string name="library_import_empty">ALL YOUR APPS ARE ALREADY IN THE LIBRARY</string>
@@ -45,11 +45,11 @@
     <string name="library_empty_title">NO GAMES YET</string>
     <string name="library_empty_meta">ADD YOUR FIRST GAME TO START</string>
 
-    <string name="library_hint_launch">LAUNCH</string>
-    <string name="library_hint_import">IMPORT</string>
-    <string name="library_hint_cancel">CANCEL</string>
-    <string name="library_hint_select">SELECT</string>
-    <string name="library_hint_close">CLOSE</string>
+    <string name="library_hint_launch" translatable="false">LAUNCH</string>
+    <string name="library_hint_import" translatable="false">IMPORT</string>
+    <string name="library_hint_cancel" translatable="false" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="library_hint_select" translatable="false">SELECT</string>
+    <string name="library_hint_close" translatable="false">CLOSE</string>
 
     <string name="library_toast_game_imported">GAME IMPORTED</string>
     <string name="library_toast_game_removed">REMOVED FROM LIBRARY</string>

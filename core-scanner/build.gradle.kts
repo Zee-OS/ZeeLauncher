@@ -11,4 +11,5 @@ dependencies {
     api(projects.coreModel)
     api(libs.coil.core)
     implementation(projects.coreCommon)
+    implementation(libs.androidx.core.ktx)
 }

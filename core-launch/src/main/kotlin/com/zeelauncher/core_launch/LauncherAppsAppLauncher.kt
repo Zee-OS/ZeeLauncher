@@ -21,10 +21,6 @@ internal class LauncherAppsAppLauncher @Inject constructor(
         launcherApps.startMainActivity(ComponentName(packageName, activityName), Process.myUserHandle(), null, null)
     }
 
-    override fun openAppInfo(packageName: String, activityName: String): LaunchResult = runCatchingLaunch {
-        launcherApps.startAppDetailsActivity(ComponentName(packageName, activityName), Process.myUserHandle(), null, null)
-    }
-
     override fun uninstall(packageName: String): LaunchResult = runCatchingLaunch {
         val uri = Uri.fromParts(LaunchAttribute.Launcher.PACKAGE_SCHEME, packageName, null)
         val intent = Intent(Intent.ACTION_DELETE, uri)

@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.TWO
 import com.zeelauncher.core_common.constant.ZERO
@@ -73,7 +74,7 @@ internal fun SettingsToggle(
         ) {
             Box(
                 Modifier
-                    .offset(x = knobOffset)
+                    .offset { IntOffset(knobOffset.roundToPx(), ZERO) }
                     .size(SettingsFeatureAttribute.Controls.ToggleKnobSize)
                     .background(if (checked) colors.content else colors.hint)
                     .border(ZeeDimens.BorderThin, colors.background),

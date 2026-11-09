@@ -36,8 +36,6 @@ import com.zeelauncher.core_data.usecase.ObserveLibraryUseCase
 import com.zeelauncher.core_data.usecase.ObserveLibraryUseCaseImpl
 import com.zeelauncher.core_data.usecase.ObserveSoundEnabledUseCase
 import com.zeelauncher.core_data.usecase.ObserveSoundEnabledUseCaseImpl
-import com.zeelauncher.core_data.usecase.OpenAppInfoUseCase
-import com.zeelauncher.core_data.usecase.OpenAppInfoUseCaseImpl
 import com.zeelauncher.core_data.usecase.RemoveGameFromLibraryUseCase
 import com.zeelauncher.core_data.usecase.RemoveGameFromLibraryUseCaseImpl
 import com.zeelauncher.core_data.usecase.SetAppLanguageUseCase
@@ -82,9 +80,6 @@ internal abstract class DataModule {
 
     @Binds
     abstract fun bindsLaunchGameUseCase(impl: LaunchGameUseCaseImpl): LaunchGameUseCase
-
-    @Binds
-    abstract fun bindsOpenAppInfoUseCase(impl: OpenAppInfoUseCaseImpl): OpenAppInfoUseCase
 
     @Binds
     abstract fun bindsGetImportableAppsUseCase(impl: GetImportableAppsUseCaseImpl): GetImportableAppsUseCase

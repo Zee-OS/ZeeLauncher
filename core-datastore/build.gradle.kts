@@ -8,6 +8,5 @@ android {
 }
 
 dependencies {
-    implementation(projects.coreModel)
     implementation(libs.androidx.datastore.preferences)
 }

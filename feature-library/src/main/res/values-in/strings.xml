@@ -27,7 +27,12 @@
         <item quantity="other">%d TAHUN LALU</item>
     </plurals>
 
+    <string name="library_import_subtitle">Pilih dari app yang terpasang</string>
+    <string name="library_import_meta">PILIH DARI APP YANG TERPASANG</string>
     <string name="library_import_empty">SEMUA APP SUDAH ADA DI LIBRARY</string>
+    <string name="library_empty_title">BELUM ADA GAME</string>
+    <string name="library_empty_meta">TAMBAHKAN GAME PERTAMAMU</string>
+
     <string name="library_toast_game_imported">GAME DITAMBAHKAN</string>
     <string name="library_toast_game_removed">DIHAPUS DARI LIBRARY</string>
     <string name="library_toast_game_not_found">GAME TIDAK DITEMUKAN</string>

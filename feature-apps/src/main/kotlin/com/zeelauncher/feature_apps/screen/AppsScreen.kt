@@ -11,7 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zeelauncher.core_common.constant.ONE_FLOAT
@@ -33,7 +33,7 @@ internal fun AppsRoute(
     viewModel: AppsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val resources = LocalResources.current
     val toast = LocalZeeToast.current
 
     ObserveZeeActions(viewModel::onAction)
@@ -41,7 +41,7 @@ internal fun AppsRoute(
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
             when (effect) {
-                AppsEffect.AppNotFound -> toast.show(context.getString(R.string.apps_toast_app_not_found), ZeeToastIcon.Close)
+                AppsEffect.AppNotFound -> toast.show(resources.getString(R.string.apps_toast_app_not_found), ZeeToastIcon.Close)
             }
         }
     }

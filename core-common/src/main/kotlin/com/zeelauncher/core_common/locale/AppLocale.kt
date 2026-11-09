@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
+import androidx.core.content.edit
 import com.zeelauncher.core_common.attr.CommonAttribute
 import com.zeelauncher.core_common.constant.ZERO
 import java.util.Locale
@@ -22,7 +23,7 @@ object AppLocale {
                 LocaleList.forLanguageTags(language.tag)
             return false
         }
-        preferences(context).edit().putString(CommonAttribute.AppLocale.LANGUAGE_KEY, language.tag).apply()
+        preferences(context).edit { putString(CommonAttribute.AppLocale.LANGUAGE_KEY, language.tag) }
         return true
     }
 

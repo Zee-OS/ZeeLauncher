@@ -24,7 +24,7 @@ class ZeeLauncherApp : Application(), SingletonImageLoader.Factory {
     lateinit var databaseWarmer: Lazy<DatabaseWarmer>
 
     @Inject
-    @field:IoDispatcher
+    @IoDispatcher
     lateinit var ioDispatcher: CoroutineDispatcher
 
     override fun onCreate() {

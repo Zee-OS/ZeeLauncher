@@ -1,5 +1,6 @@
 package com.dwiaziprasetya.zeelauncher
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -100,6 +101,7 @@ class MainActivity : ComponentActivity() {
         if (intent.hasCategory(Intent.CATEGORY_HOME)) homeRequests.request()
     }
 
+    @SuppressLint("RestrictedApi")
     override fun dispatchKeyEvent(event: KeyEvent): Boolean =
         input.dispatch(event) || super.dispatchKeyEvent(event)
 

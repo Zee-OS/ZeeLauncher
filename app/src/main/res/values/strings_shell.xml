@@ -1,7 +1,7 @@
 <resources>
-    <string name="main_tab_library">LIBRARY</string>
-    <string name="main_tab_apps">APPS</string>
-    <string name="main_tab_settings">SETTINGS</string>
+    <string name="main_tab_library" translatable="false">LIBRARY</string>
+    <string name="main_tab_apps" translatable="false">APPS</string>
+    <string name="main_tab_settings" translatable="false">SETTINGS</string>
 
     <string name="shell_toast_controller_connected">CONTROLLER CONNECTED</string>
     <string name="shell_toast_controller_disconnected">CONTROLLER DISCONNECTED</string>

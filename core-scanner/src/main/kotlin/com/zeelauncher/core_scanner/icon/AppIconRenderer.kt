@@ -10,6 +10,8 @@ import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import android.os.Process
 import android.util.DisplayMetrics
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.scale
 import com.zeelauncher.core_common.constant.MINUS_ONE
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.TWO
@@ -31,7 +33,7 @@ internal class AppIconRenderer @Inject constructor(
 
     private fun Drawable.toSquareBitmap(): Bitmap {
         val iconSize = ScannerAttribute.IconRenderer.ICON_SIZE_PX
-        val bitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(iconSize, iconSize)
         val canvas = Canvas(bitmap)
         val layers = if (this is AdaptiveIconDrawable) listOfNotNull(background, foreground) else listOf(this)
         layers.forEach { layer ->
@@ -49,7 +51,7 @@ internal class AppIconRenderer @Inject constructor(
         val top = (bounds.centerY() - side / TWO).coerceIn(ZERO, height - side)
         val cropped = Bitmap.createBitmap(this, left, top, side, side)
         val iconSize = ScannerAttribute.IconRenderer.ICON_SIZE_PX
-        return Bitmap.createScaledBitmap(cropped, iconSize, iconSize, true)
+        return cropped.scale(iconSize, iconSize)
     }
 
     private fun Bitmap.visibleBounds(): Rect? {

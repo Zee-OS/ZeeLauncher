@@ -11,7 +11,13 @@ android {
     defaultConfig {
         applicationId = "com.dwiaziprasetya.zeelauncher"
         versionCode = 1
-        versionName = "0.1.0-beta"
+        versionName = "1.0.0"
+    }
+
+    bundle {
+        language {
+            enableSplit = false
+        }
     }
 }
 
@@ -32,10 +38,4 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

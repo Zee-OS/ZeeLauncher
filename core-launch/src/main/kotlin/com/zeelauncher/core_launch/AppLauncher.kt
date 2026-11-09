@@ -6,7 +6,5 @@ interface AppLauncher {
 
     fun launch(packageName: String, activityName: String): LaunchResult
 
-    fun openAppInfo(packageName: String, activityName: String): LaunchResult
-
     fun uninstall(packageName: String): LaunchResult
 }

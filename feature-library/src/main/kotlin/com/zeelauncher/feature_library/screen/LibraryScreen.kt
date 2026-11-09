@@ -1,6 +1,6 @@
 package com.zeelauncher.feature_library.screen
 
-import android.content.Context
+import android.content.res.Resources
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,7 +43,7 @@ internal fun LibraryRoute(
     viewModel: LibraryViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val resources = LocalResources.current
     val toast = LocalZeeToast.current
 
     ObserveZeeActions(viewModel::onAction)
@@ -54,7 +54,7 @@ internal fun LibraryRoute(
     }
 
     LaunchedEffect(viewModel) {
-        viewModel.effects.collect { effect -> toast.showEffect(effect, context) }
+        viewModel.effects.collect { effect -> toast.showEffect(effect, resources) }
     }
 
     LibraryScreen(
@@ -146,15 +146,15 @@ private fun LibraryContent(
     }
 }
 
-private fun ZeeToastHostState.showEffect(effect: LibraryEffect, context: Context) {
+private fun ZeeToastHostState.showEffect(effect: LibraryEffect, resources: Resources) {
     when (effect) {
-        LibraryEffect.GameImported -> show(context.getString(R.string.library_toast_game_imported), ZeeToastIcon.Check)
-        LibraryEffect.GameRemoved -> show(context.getString(R.string.library_toast_game_removed), ZeeToastIcon.Close)
-        LibraryEffect.GameNotFound -> show(context.getString(R.string.library_toast_game_not_found), ZeeToastIcon.Close)
+        LibraryEffect.GameImported -> show(resources.getString(R.string.library_toast_game_imported), ZeeToastIcon.Check)
+        LibraryEffect.GameRemoved -> show(resources.getString(R.string.library_toast_game_removed), ZeeToastIcon.Close)
+        LibraryEffect.GameNotFound -> show(resources.getString(R.string.library_toast_game_not_found), ZeeToastIcon.Close)
         is LibraryEffect.LibraryUpdated -> {
             if (effect.addedCount > ZERO) {
                 show(
-                    context.resources.getQuantityString(
+                    resources.getQuantityString(
                         R.plurals.library_toast_games_added,
                         effect.addedCount,
                         effect.addedCount,
@@ -164,7 +164,7 @@ private fun ZeeToastHostState.showEffect(effect: LibraryEffect, context: Context
             }
             if (effect.removedCount > ZERO) {
                 show(
-                    context.resources.getQuantityString(
+                    resources.getQuantityString(
                         R.plurals.library_toast_games_uninstalled,
                         effect.removedCount,
                         effect.removedCount,

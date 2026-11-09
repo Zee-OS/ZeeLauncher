@@ -1,6 +1,6 @@
 <resources>
     <string name="settings_section_general">GENERAL</string>
-    <string name="settings_section_library">LIBRARY</string>
+    <string name="settings_section_library" translatable="false">LIBRARY</string>
     <string name="settings_section_about">ABOUT</string>
     <string name="settings_chevron" translatable="false">&gt;</string>
 
@@ -42,7 +42,7 @@
     <string name="settings_license_ofl" translatable="false">SIL OPEN FONT LICENSE 1.1</string>
 
     <string name="settings_footer_version" translatable="false">ZeeLauncher / v%1$s</string>
-    <string name="settings_hint_select">SELECT</string>
+    <string name="settings_hint_select" translatable="false">SELECT</string>
 
     <string name="settings_toast_library_up_to_date">LIBRARY UP TO DATE</string>
 
