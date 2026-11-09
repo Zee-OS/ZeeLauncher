@@ -19,6 +19,26 @@ android {
             enableSplit = false
         }
     }
+
+    signingConfigs {
+        create("release") {
+            val storePath = providers.gradleProperty("ZEE_UPLOAD_STORE_FILE")
+            if (storePath.isPresent) {
+                storeFile = file(storePath.get())
+                storePassword = providers.gradleProperty("ZEE_UPLOAD_STORE_PASSWORD").get()
+                keyAlias = providers.gradleProperty("ZEE_UPLOAD_KEY_ALIAS").get()
+                keyPassword = providers.gradleProperty("ZEE_UPLOAD_KEY_PASSWORD").get()
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            if (providers.gradleProperty("ZEE_UPLOAD_STORE_FILE").isPresent) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
+    }
 }
 
 dependencies {
