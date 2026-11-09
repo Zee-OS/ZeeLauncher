@@ -1,21 +1,10 @@
 package com.zeelauncher.core_designsystem.theme
 
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
-
-private val ZeeMaterialColors = darkColorScheme(
-    primary = ZeeDarkColors.accent,
-    onPrimary = ZeeDarkColors.onAccent,
-    background = ZeeDarkColors.background,
-    onBackground = ZeeDarkColors.content,
-    surface = ZeeDarkColors.background,
-    onSurface = ZeeDarkColors.content,
-    onSurfaceVariant = ZeeDarkColors.contentSecondary,
-    outline = ZeeDarkColors.content,
-)
+import com.zeelauncher.core_designsystem.attr.DesignSystemAttribute
 
 object ZeeTheme {
     val colors: ZeeColors
@@ -35,6 +24,6 @@ fun ZeeLauncherTheme(content: @Composable () -> Unit) {
         LocalZeeColors provides ZeeDarkColors,
         LocalZeeTypography provides ZeeDefaultTypography,
     ) {
-        MaterialTheme(colorScheme = ZeeMaterialColors, content = content)
+        MaterialTheme(colorScheme = DesignSystemAttribute.Theme.MaterialColors, content = content)
     }
 }

@@ -26,6 +26,7 @@ import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.SPACE
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
+import com.zeelauncher.core_designsystem.R as DesignR
 import com.zeelauncher.core_designsystem.component.ZeeButton
 import com.zeelauncher.core_designsystem.component.ZeeButtonHint
 import com.zeelauncher.core_designsystem.component.ZeeButtonVariant
@@ -37,14 +38,9 @@ import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.core_model.game.GamePlatform
 import com.zeelauncher.feature_library.R
+import com.zeelauncher.feature_library.attr.LibraryFeatureAttribute
 import com.zeelauncher.feature_library.viewmodel.LibraryItem
-import com.zeelauncher.core_designsystem.R as DesignR
 import kotlin.math.roundToInt
-
-private const val FOOTER_INFO_LABEL = "footer_info"
-private const val APP_INFO_HINT_LABEL = "app_info_hint"
-
-private val HintSpacing = Dimen.Dp22
 
 @Composable
 internal fun LibraryFooter(
@@ -76,7 +72,7 @@ internal fun LibraryFooter(
                 contentKey = { it.footerVariant(hasGames) },
                 contentAlignment = Alignment.BottomStart,
                 transitionSpec = { ZeeMotion.crossfade() },
-                label = FOOTER_INFO_LABEL,
+                label = LibraryFeatureAttribute.Footer.INFO_LABEL,
             ) { target ->
                 when {
                     target is LibraryItem.GameItem -> GameInfo(
@@ -125,7 +121,7 @@ private fun SlidingHint(
     val progress by animateFloatAsState(
         targetValue = if (visible) ONE_FLOAT else ZERO_FLOAT,
         animationSpec = ZeeMotion.spec(),
-        label = APP_INFO_HINT_LABEL,
+        label = LibraryFeatureAttribute.Footer.APP_INFO_HINT_LABEL,
     )
     if (progress == ZERO_FLOAT) return
     ZeeHintRow(
@@ -140,7 +136,7 @@ private fun SlidingHint(
             .graphicsLayer {
                 translationX = (size.width + ZeeDimens.ScreenPaddingHorizontal.toPx()) * (ONE_FLOAT - progress)
             }
-            .padding(start = HintSpacing),
+            .padding(start = LibraryFeatureAttribute.Footer.HintSpacing),
     )
 }
 

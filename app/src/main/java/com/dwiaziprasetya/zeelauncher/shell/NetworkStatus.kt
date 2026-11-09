@@ -12,17 +12,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import com.dwiaziprasetya.zeelauncher.attr.AppAttribute
 import com.zeelauncher.core_common.constant.FOUR
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.THREE
 import com.zeelauncher.core_common.constant.TWO
 import com.zeelauncher.core_common.constant.ZERO
-
-private const val RSSI_EXCELLENT = -55
-private const val RSSI_GOOD = -66
-private const val RSSI_FAIR = -77
-
-internal const val MAX_SIGNAL_LEVEL = FOUR
 
 internal enum class NetworkType { Wifi, Cellular, Ethernet, None }
 
@@ -67,10 +62,10 @@ private fun NetworkCapabilities.toNetworkStatus(): NetworkStatus = when {
 private fun NetworkCapabilities.wifiLevel(): Int {
     val rssi = signalStrength
     return when {
-        rssi == NetworkCapabilities.SIGNAL_STRENGTH_UNSPECIFIED -> MAX_SIGNAL_LEVEL
-        rssi >= RSSI_EXCELLENT -> FOUR
-        rssi >= RSSI_GOOD -> THREE
-        rssi >= RSSI_FAIR -> TWO
+        rssi == NetworkCapabilities.SIGNAL_STRENGTH_UNSPECIFIED -> AppAttribute.Network.MAX_SIGNAL_LEVEL
+        rssi >= AppAttribute.Network.RSSI_EXCELLENT -> FOUR
+        rssi >= AppAttribute.Network.RSSI_GOOD -> THREE
+        rssi >= AppAttribute.Network.RSSI_FAIR -> TWO
         else -> ONE
     }
 }

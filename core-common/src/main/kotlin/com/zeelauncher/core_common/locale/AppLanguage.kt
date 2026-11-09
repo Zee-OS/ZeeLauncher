@@ -1,12 +1,13 @@
 package com.zeelauncher.core_common.locale
 
-private const val ENGLISH_TAG = "en"
-private const val INDONESIAN_TAG = "in"
-private const val INDONESIAN_ALIAS_TAG = "id"
+import com.zeelauncher.core_common.attr.CommonAttribute
 
 enum class AppLanguage(val tag: String, private val aliases: Set<String>) {
-    English(ENGLISH_TAG, setOf(ENGLISH_TAG)),
-    Indonesian(INDONESIAN_TAG, setOf(INDONESIAN_TAG, INDONESIAN_ALIAS_TAG)),
+    English(CommonAttribute.AppLocale.ENGLISH_TAG, setOf(CommonAttribute.AppLocale.ENGLISH_TAG)),
+    Indonesian(
+        CommonAttribute.AppLocale.INDONESIAN_TAG,
+        setOf(CommonAttribute.AppLocale.INDONESIAN_TAG, CommonAttribute.AppLocale.INDONESIAN_ALIAS_TAG),
+    ),
     ;
 
     companion object {

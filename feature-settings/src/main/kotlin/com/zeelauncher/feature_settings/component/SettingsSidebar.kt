@@ -22,10 +22,8 @@ import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.feature_settings.R
+import com.zeelauncher.feature_settings.attr.SettingsFeatureAttribute
 import com.zeelauncher.feature_settings.viewmodel.SettingsSection
-
-private val ItemHeight = Dimen.Dp56
-private val ItemSpacing = Dimen.Dp16
 
 @Composable
 internal fun SettingsSidebar(
@@ -36,7 +34,7 @@ internal fun SettingsSidebar(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(ItemSpacing),
+        verticalArrangement = Arrangement.spacedBy(SettingsFeatureAttribute.Sidebar.ItemSpacing),
     ) {
         SettingsSection.entries.forEach { section ->
             SidebarItem(
@@ -59,7 +57,7 @@ private fun SidebarItem(
     val colors = ZeeTheme.colors
     val base = Modifier
         .fillMaxWidth()
-        .height(ItemHeight)
+        .height(SettingsFeatureAttribute.Sidebar.ItemHeight)
     val surface = if (isActive) {
         base.hardShadow(ZeeDimens.ShadowMedium, colors.shadow).background(colors.accent)
     } else {

@@ -1,5 +1,6 @@
 package com.zeelauncher.core_data.repository
 
+import com.zeelauncher.core_data.attr.DataAttribute
 import com.zeelauncher.core_data.datasource.InstalledAppsDataSource
 import com.zeelauncher.core_data.datasource.LibraryLocalDataSource
 import com.zeelauncher.core_data.mapper.toGame
@@ -16,8 +17,6 @@ import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val SYNC_RESULT_BUFFER_CAPACITY = 4
-
 @Singleton
 internal class LibraryRepositoryImpl @Inject constructor(
     private val libraryLocalDataSource: LibraryLocalDataSource,
@@ -26,7 +25,9 @@ internal class LibraryRepositoryImpl @Inject constructor(
 
     private val syncMutex = Mutex()
     private var hasSyncedOnce = false
-    private val syncResults = MutableSharedFlow<LibrarySyncResult>(extraBufferCapacity = SYNC_RESULT_BUFFER_CAPACITY)
+    private val syncResults = MutableSharedFlow<LibrarySyncResult>(
+        extraBufferCapacity = DataAttribute.LibraryRepository.SYNC_RESULT_BUFFER_CAPACITY,
+    )
 
     override fun observeLibrary(): Flow<List<Game>> =
         libraryLocalDataSource.observeGames().map { games -> games.map { it.toGame() } }

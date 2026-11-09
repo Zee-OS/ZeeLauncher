@@ -15,12 +15,9 @@ import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.TWO
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_model.app.AppIcon
-import javax.inject.Inject
+import com.zeelauncher.core_scanner.attr.ScannerAttribute
 import kotlin.math.max
-
-private const val ICON_SIZE_PX = 512
-private const val ALPHA_SHIFT = 24
-private const val ALPHA_VISIBLE_THRESHOLD = 16
+import javax.inject.Inject
 
 internal class AppIconRenderer @Inject constructor(
     private val launcherApps: LauncherApps,
@@ -33,11 +30,12 @@ internal class AppIconRenderer @Inject constructor(
     }
 
     private fun Drawable.toSquareBitmap(): Bitmap {
-        val bitmap = Bitmap.createBitmap(ICON_SIZE_PX, ICON_SIZE_PX, Bitmap.Config.ARGB_8888)
+        val iconSize = ScannerAttribute.IconRenderer.ICON_SIZE_PX
+        val bitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val layers = if (this is AdaptiveIconDrawable) listOfNotNull(background, foreground) else listOf(this)
         layers.forEach { layer ->
-            layer.setBounds(ZERO, ZERO, ICON_SIZE_PX, ICON_SIZE_PX)
+            layer.setBounds(ZERO, ZERO, iconSize, iconSize)
             layer.draw(canvas)
         }
         return bitmap
@@ -50,7 +48,8 @@ internal class AppIconRenderer @Inject constructor(
         val left = (bounds.centerX() - side / TWO).coerceIn(ZERO, width - side)
         val top = (bounds.centerY() - side / TWO).coerceIn(ZERO, height - side)
         val cropped = Bitmap.createBitmap(this, left, top, side, side)
-        return Bitmap.createScaledBitmap(cropped, ICON_SIZE_PX, ICON_SIZE_PX, true)
+        val iconSize = ScannerAttribute.IconRenderer.ICON_SIZE_PX
+        return Bitmap.createScaledBitmap(cropped, iconSize, iconSize, true)
     }
 
     private fun Bitmap.visibleBounds(): Rect? {
@@ -62,7 +61,8 @@ internal class AppIconRenderer @Inject constructor(
         var maxY = MINUS_ONE
         for (y in ZERO until height) {
             for (x in ZERO until width) {
-                if (pixels[y * width + x] ushr ALPHA_SHIFT > ALPHA_VISIBLE_THRESHOLD) {
+                val alpha = pixels[y * width + x] ushr ScannerAttribute.IconRenderer.ALPHA_SHIFT
+                if (alpha > ScannerAttribute.IconRenderer.ALPHA_VISIBLE_THRESHOLD) {
                     if (x < minX) minX = x
                     if (x > maxX) maxX = x
                     if (y < minY) minY = y

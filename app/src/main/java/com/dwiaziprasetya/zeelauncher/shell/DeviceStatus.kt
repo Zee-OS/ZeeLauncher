@@ -11,6 +11,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
+import com.dwiaziprasetya.zeelauncher.attr.AppAttribute
 import com.zeelauncher.core_common.constant.COLON
 import com.zeelauncher.core_common.constant.MINUS_ONE
 import com.zeelauncher.core_common.constant.ONE_HUNDRED
@@ -19,11 +20,6 @@ import com.zeelauncher.core_common.constant.ZERO
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
-private const val HOURS_24_PATTERN = "HH"
-private const val HOURS_12_PATTERN = "h"
-private const val MINUTES_PATTERN = "mm"
-private const val DATE_PATTERN = "EEEE, d MMMM"
 
 @Immutable
 internal data class DeviceStatus(
@@ -41,7 +37,7 @@ internal data class DeviceStatus(
         get() = when (network.type) {
             NetworkType.Wifi -> network.wifiLevel
             NetworkType.Cellular -> cellularLevel
-            NetworkType.Ethernet -> MAX_SIGNAL_LEVEL
+            NetworkType.Ethernet -> AppAttribute.Network.MAX_SIGNAL_LEVEL
             NetworkType.None -> ZERO
         }
 }
@@ -65,20 +61,30 @@ private fun readClockBattery(context: Context): ClockBattery {
     val isCharging = batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING ||
         batteryStatus == BatteryManager.BATTERY_STATUS_FULL
     val locale = context.resources.configuration.locales[ZERO]
-    val hoursPattern = if (DateFormat.is24HourFormat(context)) HOURS_24_PATTERN else HOURS_12_PATTERN
+    val hoursPattern = if (DateFormat.is24HourFormat(context)) {
+        AppAttribute.DeviceStatus.HOURS_24_PATTERN
+    } else {
+        AppAttribute.DeviceStatus.HOURS_12_PATTERN
+    }
     val now = LocalDateTime.now()
     return ClockBattery(
         batteryPercent = battery,
         isCharging = isCharging,
         hours = now.format(DateTimeFormatter.ofPattern(hoursPattern, locale)),
-        minutes = now.format(DateTimeFormatter.ofPattern(MINUTES_PATTERN, locale)),
-        date = now.format(DateTimeFormatter.ofPattern(DATE_PATTERN, locale)).uppercase(locale),
+        minutes = now.format(DateTimeFormatter.ofPattern(AppAttribute.DeviceStatus.MINUTES_PATTERN, locale)),
+        date = now
+            .format(DateTimeFormatter.ofPattern(AppAttribute.DeviceStatus.DATE_PATTERN, locale))
+            .uppercase(locale),
         cellularLevel = context.cellularLevel(),
     )
 }
 
 private fun Context.cellularLevel(): Int = try {
-    getSystemService(TelephonyManager::class.java)?.signalStrength?.level?.coerceIn(ZERO, MAX_SIGNAL_LEVEL) ?: ZERO
+    getSystemService(TelephonyManager::class.java)
+        ?.signalStrength
+        ?.level
+        ?.coerceIn(ZERO, AppAttribute.Network.MAX_SIGNAL_LEVEL)
+        ?: ZERO
 } catch (exception: SecurityException) {
     ZERO
 }

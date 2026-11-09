@@ -26,22 +26,13 @@ import com.zeelauncher.core_designsystem.component.ZeeButton
 import com.zeelauncher.core_designsystem.component.ZeeButtonVariant
 import com.zeelauncher.core_designsystem.modifier.hardShadow
 import com.zeelauncher.core_designsystem.modifier.noRippleClickable
-import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.TextDimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.feature_settings.R
+import com.zeelauncher.feature_settings.attr.SettingsFeatureAttribute
 import com.zeelauncher.feature_settings.viewmodel.SettingsRow
 import com.zeelauncher.feature_settings.viewmodel.SettingsUiState
-
-private val PanelPaddingHorizontal = Dimen.Dp40
-private val PanelPaddingVertical = Dimen.Dp34
-private val TitleSpacing = Dimen.Dp16
-private val RowSpacing = Dimen.Dp8
-private val RowPaddingHorizontal = Dimen.Dp20
-private val RowPaddingVertical = Dimen.Dp14
-private val ControlSpacing = Dimen.Dp24
-private val SubtitleSpacing = Dimen.Dp4
 
 @Composable
 internal fun SettingsPanel(
@@ -56,7 +47,10 @@ internal fun SettingsPanel(
             .hardShadow(ZeeDimens.ShadowCard, colors.shadow)
             .background(colors.background)
             .border(ZeeDimens.BorderThick, colors.content)
-            .padding(horizontal = PanelPaddingHorizontal, vertical = PanelPaddingVertical),
+            .padding(
+                horizontal = SettingsFeatureAttribute.Panel.PaddingHorizontal,
+                vertical = SettingsFeatureAttribute.Panel.PaddingVertical,
+            ),
     ) {
         Text(
             text = stringResource(state.section.labelRes()),
@@ -64,15 +58,15 @@ internal fun SettingsPanel(
             color = colors.title,
             maxLines = ONE,
         )
-        Spacer(Modifier.height(TitleSpacing))
+        Spacer(Modifier.height(SettingsFeatureAttribute.Panel.TitleSpacing))
         Box(
             Modifier
                 .fillMaxWidth()
                 .height(ZeeDimens.BorderThick)
                 .background(colors.content),
         )
-        Spacer(Modifier.height(TitleSpacing))
-        Column(verticalArrangement = Arrangement.spacedBy(RowSpacing)) {
+        Spacer(Modifier.height(SettingsFeatureAttribute.Panel.TitleSpacing))
+        Column(verticalArrangement = Arrangement.spacedBy(SettingsFeatureAttribute.Panel.RowSpacing)) {
             state.section.rows.forEachIndexed { index, row ->
                 SettingsRowItem(
                     row = row,
@@ -100,7 +94,10 @@ private fun SettingsRowItem(
             .fillMaxWidth()
             .border(ZeeDimens.BorderThin, if (isFocused) colors.accent else Color.Transparent)
             .noRippleClickable(onClick)
-            .padding(horizontal = RowPaddingHorizontal, vertical = RowPaddingVertical),
+            .padding(
+                horizontal = SettingsFeatureAttribute.Panel.RowPaddingHorizontal,
+                vertical = SettingsFeatureAttribute.Panel.RowPaddingVertical,
+            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(ONE_FLOAT)) {
@@ -110,7 +107,7 @@ private fun SettingsRowItem(
                 color = if (isFocused) colors.accent else colors.title,
                 maxLines = ONE,
             )
-            Spacer(Modifier.height(SubtitleSpacing))
+            Spacer(Modifier.height(SettingsFeatureAttribute.Panel.SubtitleSpacing))
             Text(
                 text = stringResource(row.subtitleRes()),
                 style = ZeeTheme.typography.body,
@@ -119,7 +116,7 @@ private fun SettingsRowItem(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        Spacer(Modifier.width(ControlSpacing))
+        Spacer(Modifier.width(SettingsFeatureAttribute.Panel.ControlSpacing))
         RowControl(row = row, state = state, onClick = onClick, onLanguageClick = onLanguageClick)
     }
 }
@@ -134,7 +131,7 @@ private fun RowControl(
     when (row) {
         SettingsRow.DefaultLauncher -> Row(verticalAlignment = Alignment.CenterVertically) {
             SettingsStatus(enabled = state.isDefaultLauncher)
-            Spacer(Modifier.width(ControlSpacing))
+            Spacer(Modifier.width(SettingsFeatureAttribute.Panel.ControlSpacing))
             ZeeButton(
                 label = stringResource(
                     if (state.isDefaultLauncher) R.string.settings_default_launcher_change else R.string.settings_default_launcher_set,

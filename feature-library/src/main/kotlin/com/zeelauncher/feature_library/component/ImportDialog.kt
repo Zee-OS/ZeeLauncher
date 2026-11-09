@@ -11,34 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.zeelauncher.core_common.constant.ONE
-import com.zeelauncher.core_common.constant.TWO
+import com.zeelauncher.core_designsystem.R as DesignR
 import com.zeelauncher.core_designsystem.component.ZeeAppGrid
-import com.zeelauncher.core_designsystem.component.ZeeAppGridSpec
 import com.zeelauncher.core_designsystem.component.ZeeButtonHint
 import com.zeelauncher.core_designsystem.component.ZeeHintRow
 import com.zeelauncher.core_designsystem.theme.Dimen
-import com.zeelauncher.core_designsystem.theme.TextDimen
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.feature_library.R
-import com.zeelauncher.feature_library.viewmodel.IMPORT_GRID_COLUMNS
+import com.zeelauncher.feature_library.attr.LibraryFeatureAttribute
 import com.zeelauncher.feature_library.viewmodel.ImportUiState
-import com.zeelauncher.core_designsystem.R as DesignR
-
-private const val VISIBLE_ROWS = 2
-
-private val ImportGridSpec = ZeeAppGridSpec(
-    columns = IMPORT_GRID_COLUMNS,
-    visibleRows = VISIBLE_ROWS,
-    tileSize = Dimen.Dp80,
-    cellWidth = Dimen.Dp108,
-    cellHeight = Dimen.Dp124,
-    columnSpacing = Dimen.Dp20,
-    rowSpacing = Dimen.Dp20,
-    labelSpacing = Dimen.Dp10,
-    labelSize = TextDimen.Sp14,
-    labelLines = TWO,
-    placeholderLabelSize = TextDimen.Sp20,
-)
 
 @Composable
 internal fun ImportDialogContent(
@@ -53,7 +34,10 @@ internal fun ImportDialogContent(
     )
     Spacer(Modifier.height(Dimen.Dp30))
     Box(
-        modifier = Modifier.size(ImportGridSpec.width, ImportGridSpec.height),
+        modifier = Modifier.size(
+            LibraryFeatureAttribute.Import.GridSpec.width,
+            LibraryFeatureAttribute.Import.GridSpec.height,
+        ),
         contentAlignment = Alignment.Center,
     ) {
         when {
@@ -67,7 +51,7 @@ internal fun ImportDialogContent(
             else -> ZeeAppGrid(
                 apps = state.apps,
                 selectedIndex = state.selectedIndex,
-                spec = ImportGridSpec,
+                spec = LibraryFeatureAttribute.Import.GridSpec,
                 onTileClick = onTileClick,
             )
         }

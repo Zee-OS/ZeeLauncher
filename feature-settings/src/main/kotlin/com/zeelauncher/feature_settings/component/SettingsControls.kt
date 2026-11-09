@@ -29,14 +29,7 @@ import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.feature_settings.R
-
-private const val TOGGLE_KNOB_LABEL = "settings_toggle_knob"
-
-private val ToggleWidth = Dimen.Dp84
-private val ToggleHeight = Dimen.Dp40
-private val ToggleKnobSize = Dimen.Dp24
-private val ToggleKnobInset = Dimen.Dp5
-private val StatusSpacing = Dimen.Dp14
+import com.zeelauncher.feature_settings.attr.SettingsFeatureAttribute
 
 @Composable
 internal fun SettingsStatus(enabled: Boolean) {
@@ -55,27 +48,33 @@ internal fun SettingsToggle(
 ) {
     val colors = ZeeTheme.colors
     val knobOffset by animateDpAsState(
-        targetValue = if (checked) ToggleWidth - ToggleKnobSize - ToggleKnobInset * TWO else Dimen.Dp0,
+        targetValue = if (checked) {
+            SettingsFeatureAttribute.Controls.ToggleWidth -
+                SettingsFeatureAttribute.Controls.ToggleKnobSize -
+                SettingsFeatureAttribute.Controls.ToggleKnobInset * TWO
+        } else {
+            Dimen.Dp0
+        },
         animationSpec = ZeeMotion.spec(),
-        label = TOGGLE_KNOB_LABEL,
+        label = SettingsFeatureAttribute.Controls.KNOB_LABEL,
     )
     Row(verticalAlignment = Alignment.CenterVertically) {
         SettingsStatus(enabled = checked)
-        Spacer(Modifier.width(StatusSpacing))
+        Spacer(Modifier.width(SettingsFeatureAttribute.Controls.StatusSpacing))
         Box(
             modifier = Modifier
-                .size(ToggleWidth, ToggleHeight)
+                .size(SettingsFeatureAttribute.Controls.ToggleWidth, SettingsFeatureAttribute.Controls.ToggleHeight)
                 .hardShadow(ZeeDimens.ShadowSmall, colors.shadow)
                 .background(if (checked) colors.accent else colors.background)
                 .border(ZeeDimens.BorderThin, colors.content)
                 .noRippleClickable(onClick)
-                .padding(ToggleKnobInset),
+                .padding(SettingsFeatureAttribute.Controls.ToggleKnobInset),
             contentAlignment = Alignment.CenterStart,
         ) {
             Box(
                 Modifier
                     .offset(x = knobOffset)
-                    .size(ToggleKnobSize)
+                    .size(SettingsFeatureAttribute.Controls.ToggleKnobSize)
                     .background(if (checked) colors.content else colors.hint)
                     .border(ZeeDimens.BorderThin, colors.background),
             )

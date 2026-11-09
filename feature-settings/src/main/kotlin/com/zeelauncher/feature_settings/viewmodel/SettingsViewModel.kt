@@ -14,6 +14,7 @@ import com.zeelauncher.core_data.usecase.SetAppLanguageUseCase
 import com.zeelauncher.core_data.usecase.SetSoundEnabledUseCase
 import com.zeelauncher.core_data.usecase.SyncLibraryUseCase
 import com.zeelauncher.core_input.ZeeAction
+import com.zeelauncher.feature_settings.attr.SettingsFeatureAttribute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +27,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-private const val EFFECT_BUFFER_CAPACITY = 4
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -43,7 +42,9 @@ class SettingsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
-    private val _effects = MutableSharedFlow<SettingsEffect>(extraBufferCapacity = EFFECT_BUFFER_CAPACITY)
+    private val _effects = MutableSharedFlow<SettingsEffect>(
+        extraBufferCapacity = SettingsFeatureAttribute.ViewModel.EFFECT_BUFFER_CAPACITY,
+    )
     val effects: SharedFlow<SettingsEffect> = _effects.asSharedFlow()
 
     init {

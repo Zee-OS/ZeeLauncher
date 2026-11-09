@@ -33,13 +33,13 @@ import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.locale.AppLanguage
+import com.zeelauncher.core_designsystem.R as DesignR
 import com.zeelauncher.core_designsystem.component.ZeeButtonHint
 import com.zeelauncher.core_designsystem.component.ZeeHintRow
 import com.zeelauncher.core_designsystem.component.ZeeModal
 import com.zeelauncher.core_designsystem.component.zeeBackHint
 import com.zeelauncher.core_designsystem.overlay.ZeeOverlay
 import com.zeelauncher.core_designsystem.overlay.isOverlayActive
-import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.core_designsystem.toast.LocalZeeToast
@@ -48,6 +48,7 @@ import com.zeelauncher.core_designsystem.toast.ZeeToastIcon
 import com.zeelauncher.core_input.ObserveZeeActions
 import com.zeelauncher.core_model.library.LibrarySyncResult
 import com.zeelauncher.feature_settings.R
+import com.zeelauncher.feature_settings.attr.SettingsFeatureAttribute
 import com.zeelauncher.feature_settings.component.LicensesDialogContent
 import com.zeelauncher.feature_settings.component.SettingsPanel
 import com.zeelauncher.feature_settings.component.SettingsSidebar
@@ -56,12 +57,6 @@ import com.zeelauncher.feature_settings.viewmodel.SettingsRow
 import com.zeelauncher.feature_settings.viewmodel.SettingsSection
 import com.zeelauncher.feature_settings.viewmodel.SettingsUiState
 import com.zeelauncher.feature_settings.viewmodel.SettingsViewModel
-import com.zeelauncher.core_designsystem.R as DesignR
-
-private val SidebarWidth = Dimen.Dp340
-private val ContentSpacing = Dimen.Dp48
-private val ContentPaddingTop = Dimen.Dp40
-private val ContentPaddingBottom = Dimen.Dp30
 
 @Composable
 internal fun SettingsRoute(
@@ -128,15 +123,18 @@ internal fun SettingsScreen(
                 .weight(ONE_FLOAT)
                 .fillMaxWidth()
                 .padding(horizontal = ZeeDimens.ScreenPaddingHorizontal)
-                .padding(top = ContentPaddingTop, bottom = ContentPaddingBottom),
+                .padding(
+                    top = SettingsFeatureAttribute.Screen.ContentPaddingTop,
+                    bottom = SettingsFeatureAttribute.Screen.ContentPaddingBottom,
+                ),
         ) {
             SettingsSidebar(
                 selected = uiState.section,
                 isFocused = !uiState.isPanelFocused,
                 onSectionClick = onSectionClick,
-                modifier = Modifier.width(SidebarWidth),
+                modifier = Modifier.width(SettingsFeatureAttribute.Screen.SidebarWidth),
             )
-            Spacer(Modifier.width(ContentSpacing))
+            Spacer(Modifier.width(SettingsFeatureAttribute.Screen.ContentSpacing))
             SettingsPanel(
                 state = uiState,
                 onRowClick = onRowClick,

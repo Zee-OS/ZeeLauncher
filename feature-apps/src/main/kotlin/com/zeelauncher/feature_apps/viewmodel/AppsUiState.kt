@@ -4,8 +4,6 @@ import androidx.compose.runtime.Immutable
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_model.app.InstalledApp
 
-internal const val APPS_GRID_COLUMNS = 6
-
 @Immutable
 data class AppsUiState(
     val isLoading: Boolean = true,

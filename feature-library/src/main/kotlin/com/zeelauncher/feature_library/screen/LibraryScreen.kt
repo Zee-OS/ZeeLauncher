@@ -29,6 +29,7 @@ import com.zeelauncher.core_designsystem.toast.ZeeToastHostState
 import com.zeelauncher.core_designsystem.toast.ZeeToastIcon
 import com.zeelauncher.core_input.ObserveZeeActions
 import com.zeelauncher.feature_library.R
+import com.zeelauncher.feature_library.attr.LibraryFeatureAttribute
 import com.zeelauncher.feature_library.component.AppInfoDrawerContent
 import com.zeelauncher.feature_library.component.GameCarousel
 import com.zeelauncher.feature_library.component.ImportDialogContent
@@ -36,9 +37,6 @@ import com.zeelauncher.feature_library.component.LibraryFooter
 import com.zeelauncher.feature_library.viewmodel.LibraryEffect
 import com.zeelauncher.feature_library.viewmodel.LibraryUiState
 import com.zeelauncher.feature_library.viewmodel.LibraryViewModel
-
-private const val CAROUSEL_ANIMATION_LABEL = "carousel"
-private const val LIBRARY_CHANGE_LABEL = "library_change"
 
 @Composable
 internal fun LibraryRoute(
@@ -101,7 +99,7 @@ internal fun LibraryScreen(
         targetState = uiState,
         contentKey = { it.contentKey },
         transitionSpec = { ZeeMotion.crossfade() },
-        label = LIBRARY_CHANGE_LABEL,
+        label = LibraryFeatureAttribute.Screen.LIBRARY_CHANGE_LABEL,
         modifier = modifier.fillMaxSize(),
     ) { state ->
         if (state.isLoading) {
@@ -127,7 +125,7 @@ private fun LibraryContent(
     val position by animateFloatAsState(
         targetValue = uiState.selectedIndex.toFloat(),
         animationSpec = ZeeMotion.spec(),
-        label = CAROUSEL_ANIMATION_LABEL,
+        label = LibraryFeatureAttribute.Screen.CAROUSEL_ANIMATION_LABEL,
     )
     Column(Modifier.fillMaxSize()) {
         GameCarousel(

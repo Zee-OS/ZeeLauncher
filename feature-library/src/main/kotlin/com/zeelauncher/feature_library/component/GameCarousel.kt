@@ -13,16 +13,12 @@ import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_designsystem.modifier.noRippleClickable
 import com.zeelauncher.core_designsystem.sound.tapSound
-import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
+import com.zeelauncher.feature_library.attr.LibraryFeatureAttribute
 import com.zeelauncher.feature_library.viewmodel.LibraryItem
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.roundToInt
-
-private val CardSmall = Dimen.Dp170
-private val CardLarge = Dimen.Dp340
-private val CardGap = Dimen.Dp30
 
 @Composable
 internal fun GameCarousel(
@@ -44,9 +40,9 @@ internal fun GameCarousel(
             }
         },
     ) { measurables, constraints ->
-        val gap = CardGap.toPx()
-        val small = CardSmall.toPx()
-        val large = CardLarge.toPx()
+        val gap = LibraryFeatureAttribute.GameCarousel.CardGap.toPx()
+        val small = LibraryFeatureAttribute.GameCarousel.CardSmall.toPx()
+        val large = LibraryFeatureAttribute.GameCarousel.CardLarge.toPx()
         val sizes = items.indices.map { small + (large - small) * focusOf(it, position) }
         val placeables = measurables.mapIndexed { index, measurable ->
             val side = sizes[index].roundToInt()

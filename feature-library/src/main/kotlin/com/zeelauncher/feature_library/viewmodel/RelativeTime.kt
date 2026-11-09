@@ -2,10 +2,8 @@ package com.zeelauncher.feature_library.viewmodel
 
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ZERO_LONG
+import com.zeelauncher.feature_library.attr.LibraryFeatureAttribute
 import java.util.concurrent.TimeUnit
-
-private const val DAYS_PER_MONTH = 30L
-private const val DAYS_PER_YEAR = 365L
 
 sealed interface RelativeTime {
     data object Never : RelativeTime
@@ -29,8 +27,9 @@ internal fun relativeTimeOf(timestamp: Long?, now: Long): RelativeTime {
         hours < ONE -> RelativeTime.Minutes(minutes.toInt())
         days < ONE -> RelativeTime.Hours(hours.toInt())
         days == ONE.toLong() -> RelativeTime.Yesterday
-        days < DAYS_PER_MONTH -> RelativeTime.Days(days.toInt())
-        days < DAYS_PER_YEAR -> RelativeTime.Months((days / DAYS_PER_MONTH).toInt())
-        else -> RelativeTime.Years((days / DAYS_PER_YEAR).toInt())
+        days < LibraryFeatureAttribute.RelativeTime.DAYS_PER_MONTH -> RelativeTime.Days(days.toInt())
+        days < LibraryFeatureAttribute.RelativeTime.DAYS_PER_YEAR ->
+            RelativeTime.Months((days / LibraryFeatureAttribute.RelativeTime.DAYS_PER_MONTH).toInt())
+        else -> RelativeTime.Years((days / LibraryFeatureAttribute.RelativeTime.DAYS_PER_YEAR).toInt())
     }
 }

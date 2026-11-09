@@ -4,31 +4,35 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
-import com.zeelauncher.core_database.entity.LIBRARY_GAME_LABEL
-import com.zeelauncher.core_database.entity.LIBRARY_GAME_LAST_PLAYED_AT
-import com.zeelauncher.core_database.entity.LIBRARY_GAME_PACKAGE_NAME
-import com.zeelauncher.core_database.entity.LIBRARY_GAME_TABLE
+import com.zeelauncher.core_database.attr.DatabaseAttribute
 import com.zeelauncher.core_database.entity.LibraryGameEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LibraryGameDao {
 
-    @Query("SELECT * FROM $LIBRARY_GAME_TABLE ORDER BY $LIBRARY_GAME_LABEL COLLATE NOCASE ASC")
+    @Query(
+        "SELECT * FROM ${DatabaseAttribute.LibraryGame.TABLE} " +
+            "ORDER BY ${DatabaseAttribute.LibraryGame.COLUMN_LABEL} COLLATE NOCASE ASC",
+    )
     fun observeAll(): Flow<List<LibraryGameEntity>>
 
-    @Query("SELECT * FROM $LIBRARY_GAME_TABLE")
+    @Query("SELECT * FROM ${DatabaseAttribute.LibraryGame.TABLE}")
     suspend fun getAll(): List<LibraryGameEntity>
 
     @Upsert
     suspend fun upsert(entities: List<LibraryGameEntity>)
 
-    @Query("DELETE FROM $LIBRARY_GAME_TABLE WHERE $LIBRARY_GAME_PACKAGE_NAME IN (:packageNames)")
+    @Query(
+        "DELETE FROM ${DatabaseAttribute.LibraryGame.TABLE} " +
+            "WHERE ${DatabaseAttribute.LibraryGame.COLUMN_PACKAGE_NAME} IN (:packageNames)",
+    )
     suspend fun delete(packageNames: List<String>)
 
     @Query(
-        "UPDATE $LIBRARY_GAME_TABLE SET $LIBRARY_GAME_LAST_PLAYED_AT = :playedAt " +
-            "WHERE $LIBRARY_GAME_PACKAGE_NAME = :packageName",
+        "UPDATE ${DatabaseAttribute.LibraryGame.TABLE} " +
+            "SET ${DatabaseAttribute.LibraryGame.COLUMN_LAST_PLAYED_AT} = :playedAt " +
+            "WHERE ${DatabaseAttribute.LibraryGame.COLUMN_PACKAGE_NAME} = :packageName",
     )
     suspend fun updateLastPlayed(packageName: String, playedAt: Long)
 

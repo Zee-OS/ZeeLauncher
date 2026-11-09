@@ -1,11 +1,13 @@
 package com.dwiaziprasetya.zeelauncher
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.KeyEvent
 import android.view.animation.PathInterpolator
 import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
@@ -16,33 +18,30 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.dwiaziprasetya.zeelauncher.attr.AppAttribute
 import com.dwiaziprasetya.zeelauncher.navigation.ZeeRootNavHost
 import com.dwiaziprasetya.zeelauncher.shell.ControllerToasts
+import com.dwiaziprasetya.zeelauncher.sound.attachInputSounds
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_common.home.HomeRequests
+import com.zeelauncher.core_common.locale.AppLocale
 import com.zeelauncher.core_common.startup.AppReadiness
+import com.zeelauncher.core_data.usecase.ObserveSoundEnabledUseCase
 import com.zeelauncher.core_designsystem.layout.ZeeCanvas
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
 import com.zeelauncher.core_designsystem.overlay.LocalZeeOverlayHost
 import com.zeelauncher.core_designsystem.overlay.ZeeOverlayHost
 import com.zeelauncher.core_designsystem.overlay.ZeeOverlayHostState
+import com.zeelauncher.core_designsystem.sound.LocalZeeSound
 import com.zeelauncher.core_designsystem.theme.ZeeLauncherTheme
 import com.zeelauncher.core_designsystem.toast.LocalZeeToast
 import com.zeelauncher.core_designsystem.toast.ZeeToastHost
 import com.zeelauncher.core_designsystem.toast.ZeeToastHostState
 import com.zeelauncher.core_input.LocalZeeInput
+import com.zeelauncher.core_input.ZeeAction
 import com.zeelauncher.core_input.ZeeInputDispatcher
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import androidx.activity.addCallback
-import com.zeelauncher.core_input.ZeeAction
-import android.content.Context
-import com.zeelauncher.core_common.locale.AppLocale
-import com.dwiaziprasetya.zeelauncher.sound.attachInputSounds
-import com.zeelauncher.core_data.usecase.ObserveSoundEnabledUseCase
-import com.zeelauncher.core_designsystem.sound.LocalZeeSound
-
-private const val SPLASH_TIMEOUT_MILLIS = 3_000L
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -107,7 +106,8 @@ class MainActivity : ComponentActivity() {
     private fun holdSplashUntilReady(splashScreen: SplashScreen) {
         val startedAt = SystemClock.uptimeMillis()
         splashScreen.setKeepOnScreenCondition {
-            !appReadiness.isReady.value && SystemClock.uptimeMillis() - startedAt < SPLASH_TIMEOUT_MILLIS
+            val elapsed = SystemClock.uptimeMillis() - startedAt
+            !appReadiness.isReady.value && elapsed < AppAttribute.MainActivity.SPLASH_TIMEOUT_MILLIS
         }
         splashScreen.setOnExitAnimationListener { provider ->
             provider.view.animate()

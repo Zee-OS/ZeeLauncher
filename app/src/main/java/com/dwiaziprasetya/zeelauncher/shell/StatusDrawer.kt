@@ -23,31 +23,19 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import com.dwiaziprasetya.zeelauncher.R
+import com.dwiaziprasetya.zeelauncher.attr.AppAttribute
+import com.dwiaziprasetya.zeelauncher.attr.AppAttribute.Network.MAX_SIGNAL_LEVEL
 import com.zeelauncher.core_common.constant.COLON
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.ONE_HUNDRED_FLOAT
+import com.zeelauncher.core_designsystem.R as DesignR
 import com.zeelauncher.core_designsystem.component.ZeeButtonHint
 import com.zeelauncher.core_designsystem.component.ZeeHintRow
 import com.zeelauncher.core_designsystem.modifier.hardShadow
-import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.TextDimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
-import com.zeelauncher.core_designsystem.R as DesignR
-
-private const val BATTERY_LOW_THRESHOLD = 20
-
-private val DateSpacing = Dimen.Dp16
-private val SectionSpacing = Dimen.Dp40
-private val CardSpacing = Dimen.Dp20
-private val CardHeight = Dimen.Dp150
-private val CardPadding = Dimen.Dp20
-private val CardLabelSpacing = Dimen.Dp8
-private val SignalBarWidth = Dimen.Dp8
-private val SignalBarSpacing = Dimen.Dp5
-private val SignalBarStep = Dimen.Dp6
-private val BatteryBarHeight = Dimen.Dp18
 
 @Composable
 internal fun ColumnScope.StatusDrawerContent(status: DeviceStatus) {
@@ -62,15 +50,15 @@ internal fun ColumnScope.StatusDrawerContent(status: DeviceStatus) {
         color = colors.title,
         maxLines = ONE,
     )
-    Spacer(Modifier.height(DateSpacing))
+    Spacer(Modifier.height(AppAttribute.StatusDrawer.DateSpacing))
     Text(
         text = status.date,
         style = ZeeTheme.typography.label,
         color = colors.contentSecondary,
         maxLines = ONE,
     )
-    Spacer(Modifier.height(SectionSpacing))
-    Row(horizontalArrangement = Arrangement.spacedBy(CardSpacing)) {
+    Spacer(Modifier.height(AppAttribute.StatusDrawer.SectionSpacing))
+    Row(horizontalArrangement = Arrangement.spacedBy(AppAttribute.StatusDrawer.CardSpacing)) {
         StatusCard(
             label = stringResource(R.string.status_network),
             value = stringResource(status.network.type.labelRes()),
@@ -102,11 +90,11 @@ private fun RowScope.StatusCard(
     Column(
         modifier = Modifier
             .weight(ONE_FLOAT)
-            .height(CardHeight)
+            .height(AppAttribute.StatusDrawer.CardHeight)
             .hardShadow(ZeeDimens.ShadowMedium, colors.shadow)
             .background(colors.background)
             .border(ZeeDimens.BorderThin, colors.content)
-            .padding(CardPadding),
+            .padding(AppAttribute.StatusDrawer.CardPadding),
     ) {
         Text(
             text = label,
@@ -114,7 +102,7 @@ private fun RowScope.StatusCard(
             color = colors.contentSecondary,
             maxLines = ONE,
         )
-        Spacer(Modifier.height(CardLabelSpacing))
+        Spacer(Modifier.height(AppAttribute.StatusDrawer.CardLabelSpacing))
         Text(
             text = value,
             style = ZeeTheme.typography.headline,
@@ -130,13 +118,13 @@ private fun RowScope.StatusCard(
 private fun SignalBars(level: Int) {
     val colors = ZeeTheme.colors
     Row(
-        horizontalArrangement = Arrangement.spacedBy(SignalBarSpacing),
+        horizontalArrangement = Arrangement.spacedBy(AppAttribute.StatusDrawer.SignalBarSpacing),
         verticalAlignment = Alignment.Bottom,
     ) {
         (ONE..MAX_SIGNAL_LEVEL).forEach { bar ->
             Box(
                 Modifier
-                    .size(SignalBarWidth, SignalBarStep * bar)
+                    .size(AppAttribute.StatusDrawer.SignalBarWidth, AppAttribute.StatusDrawer.SignalBarStep * bar)
                     .background(if (bar <= level) colors.content else colors.shadow),
             )
         }
@@ -149,7 +137,7 @@ private fun BatteryBar(percent: Int) {
     Box(
         Modifier
             .fillMaxWidth()
-            .height(BatteryBarHeight)
+            .height(AppAttribute.StatusDrawer.BatteryBarHeight)
             .border(ZeeDimens.BorderThin, colors.content)
             .padding(ZeeDimens.BorderThin),
     ) {
@@ -157,7 +145,9 @@ private fun BatteryBar(percent: Int) {
             Modifier
                 .fillMaxHeight()
                 .fillMaxWidth(percent / ONE_HUNDRED_FLOAT)
-                .background(if (percent <= BATTERY_LOW_THRESHOLD) colors.accent else colors.success),
+                .background(
+                    if (percent <= AppAttribute.StatusDrawer.BATTERY_LOW_THRESHOLD) colors.accent else colors.success,
+                ),
         )
     }
 }

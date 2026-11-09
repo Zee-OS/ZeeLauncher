@@ -20,12 +20,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.graphicsLayer
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
+import com.zeelauncher.core_designsystem.attr.DesignSystemAttribute
 import com.zeelauncher.core_designsystem.modifier.noRippleClickable
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
-
-private const val DRAWER_SLIDE_LABEL = "drawer_slide"
 
 @Composable
 fun AnimatedVisibilityScope.ZeeDrawer(
@@ -36,7 +35,7 @@ fun AnimatedVisibilityScope.ZeeDrawer(
     val colors = ZeeTheme.colors
     val slide by transition.animateFloat(
         transitionSpec = { ZeeMotion.spec() },
-        label = DRAWER_SLIDE_LABEL,
+        label = DesignSystemAttribute.Drawer.SLIDE_LABEL,
     ) { state -> if (state == EnterExitState.Visible) ZERO_FLOAT else ONE_FLOAT }
 
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) {

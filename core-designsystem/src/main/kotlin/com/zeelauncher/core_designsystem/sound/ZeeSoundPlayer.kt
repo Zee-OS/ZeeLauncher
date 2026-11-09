@@ -6,13 +6,12 @@ import android.media.SoundPool
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.ZERO
-
-private const val MAX_STREAMS = 4
+import com.zeelauncher.core_designsystem.attr.DesignSystemAttribute
 
 class ZeeSoundPlayer(context: Context) {
 
     private val soundPool = SoundPool.Builder()
-        .setMaxStreams(MAX_STREAMS)
+        .setMaxStreams(DesignSystemAttribute.SoundPlayer.MAX_STREAMS)
         .setAudioAttributes(
             AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)

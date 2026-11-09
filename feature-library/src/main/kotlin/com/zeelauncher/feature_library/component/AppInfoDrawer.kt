@@ -24,26 +24,20 @@ import com.zeelauncher.core_common.constant.DASH
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.TWO
+import com.zeelauncher.core_designsystem.R as DesignR
 import com.zeelauncher.core_designsystem.component.ZeeAppIcon
 import com.zeelauncher.core_designsystem.component.ZeeButtonHint
 import com.zeelauncher.core_designsystem.component.ZeeHintRow
 import com.zeelauncher.core_designsystem.component.ZeeListButton
-import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.TextDimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.core_model.app.AppIcon
 import com.zeelauncher.feature_library.R
+import com.zeelauncher.feature_library.attr.LibraryFeatureAttribute
 import com.zeelauncher.feature_library.viewmodel.AppInfoOption
 import com.zeelauncher.feature_library.viewmodel.AppInfoUiState
 import com.zeelauncher.feature_library.viewmodel.RelativeTime
-import com.zeelauncher.core_designsystem.R as DesignR
-
-private val IconSize = Dimen.Dp72
-private val HeaderSpacing = Dimen.Dp18
-private val SectionSpacing = Dimen.Dp40
-private val InfoRowSpacing = Dimen.Dp20
-private val OptionSpacing = Dimen.Dp12
 
 @Composable
 internal fun ColumnScope.AppInfoDrawerContent(
@@ -57,7 +51,7 @@ internal fun ColumnScope.AppInfoDrawerContent(
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             Modifier
-                .size(IconSize)
+                .size(LibraryFeatureAttribute.AppInfoDrawer.IconSize)
                 .border(ZeeDimens.BorderThin, colors.content)
                 .padding(ZeeDimens.BorderThin),
         ) {
@@ -67,7 +61,7 @@ internal fun ColumnScope.AppInfoDrawerContent(
                 placeholderLabelSize = TextDimen.Sp20,
             )
         }
-        Spacer(Modifier.width(HeaderSpacing))
+        Spacer(Modifier.width(LibraryFeatureAttribute.AppInfoDrawer.HeaderSpacing))
         Text(
             text = game.label.uppercase(),
             style = ZeeTheme.typography.headline,
@@ -76,18 +70,18 @@ internal fun ColumnScope.AppInfoDrawerContent(
             overflow = TextOverflow.Ellipsis,
         )
     }
-    Spacer(Modifier.height(SectionSpacing))
+    Spacer(Modifier.height(LibraryFeatureAttribute.AppInfoDrawer.SectionSpacing))
     InfoRow(
         label = stringResource(R.string.library_info_last_played),
         value = state.lastPlayed.label(),
     )
-    Spacer(Modifier.height(InfoRowSpacing))
+    Spacer(Modifier.height(LibraryFeatureAttribute.AppInfoDrawer.InfoRowSpacing))
     InfoRow(
         label = stringResource(R.string.library_info_version),
         value = state.versionName ?: DASH,
     )
-    Spacer(Modifier.height(SectionSpacing))
-    Column(verticalArrangement = Arrangement.spacedBy(OptionSpacing)) {
+    Spacer(Modifier.height(LibraryFeatureAttribute.AppInfoDrawer.SectionSpacing))
+    Column(verticalArrangement = Arrangement.spacedBy(LibraryFeatureAttribute.AppInfoDrawer.OptionSpacing)) {
         state.options.forEachIndexed { index, option ->
             ZeeListButton(
                 label = stringResource(option.labelRes()),

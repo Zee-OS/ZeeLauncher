@@ -14,41 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_designsystem.component.ZeeAppGrid
-import com.zeelauncher.core_designsystem.component.ZeeAppGridSpec
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
-import com.zeelauncher.core_designsystem.theme.Dimen
-import com.zeelauncher.core_designsystem.theme.TextDimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.toast.LocalZeeToast
 import com.zeelauncher.core_designsystem.toast.ZeeToastIcon
 import com.zeelauncher.core_input.ObserveZeeActions
 import com.zeelauncher.feature_apps.R
+import com.zeelauncher.feature_apps.attr.AppsFeatureAttribute
 import com.zeelauncher.feature_apps.component.AppsFooter
-import com.zeelauncher.feature_apps.viewmodel.APPS_GRID_COLUMNS
 import com.zeelauncher.feature_apps.viewmodel.AppsEffect
 import com.zeelauncher.feature_apps.viewmodel.AppsUiState
 import com.zeelauncher.feature_apps.viewmodel.AppsViewModel
-
-private const val APPS_CONTENT_LABEL = "apps_content"
-private const val VISIBLE_ROWS = 3
-
-private val AppsGridSpec = ZeeAppGridSpec(
-    columns = APPS_GRID_COLUMNS,
-    visibleRows = VISIBLE_ROWS,
-    tileSize = Dimen.Dp104,
-    cellWidth = Dimen.Dp150,
-    cellHeight = Dimen.Dp140,
-    columnSpacing = Dimen.Dp16,
-    rowSpacing = Dimen.Dp22,
-    labelSpacing = Dimen.Dp12,
-    labelSize = TextDimen.Sp16,
-    labelLines = ONE,
-    placeholderLabelSize = TextDimen.Sp26,
-    tileTopInset = -ZeeDimens.FocusLift,
-)
 
 @Composable
 internal fun AppsRoute(
@@ -86,7 +64,7 @@ internal fun AppsScreen(
         targetState = uiState,
         contentKey = { it.isLoading },
         transitionSpec = { ZeeMotion.crossfade() },
-        label = APPS_CONTENT_LABEL,
+        label = AppsFeatureAttribute.Screen.CONTENT_LABEL,
         modifier = modifier.fillMaxSize(),
     ) { state ->
         if (state.isLoading) {
@@ -102,7 +80,7 @@ internal fun AppsScreen(
                     ZeeAppGrid(
                         apps = state.apps,
                         selectedIndex = state.selectedIndex,
-                        spec = AppsGridSpec,
+                        spec = AppsFeatureAttribute.Grid.Spec,
                         onTileClick = onTileClick,
                     )
                 }

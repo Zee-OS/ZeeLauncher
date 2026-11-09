@@ -14,21 +14,9 @@ import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_designsystem.component.ZeeHintRow
 import com.zeelauncher.core_designsystem.component.zeeBackHint
-import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.feature_settings.R
-
-private val DialogWidth = Dimen.Dp510
-private val EntrySpacing = Dimen.Dp14
-private val SectionSpacing = Dimen.Dp30
-
-private val LicenseEntries = listOf(
-    R.string.settings_license_androidx to R.string.settings_license_apache,
-    R.string.settings_license_kotlin to R.string.settings_license_apache,
-    R.string.settings_license_hilt to R.string.settings_license_apache,
-    R.string.settings_license_coil to R.string.settings_license_apache,
-    R.string.settings_license_rajdhani to R.string.settings_license_ofl,
-)
+import com.zeelauncher.feature_settings.attr.SettingsFeatureAttribute
 
 @Composable
 internal fun LicensesDialogContent() {
@@ -39,12 +27,12 @@ internal fun LicensesDialogContent() {
         color = colors.title,
         maxLines = ONE,
     )
-    Spacer(Modifier.height(SectionSpacing))
+    Spacer(Modifier.height(SettingsFeatureAttribute.LicensesDialog.SectionSpacing))
     Column(
-        modifier = Modifier.width(DialogWidth),
-        verticalArrangement = Arrangement.spacedBy(EntrySpacing),
+        modifier = Modifier.width(SettingsFeatureAttribute.LicensesDialog.Width),
+        verticalArrangement = Arrangement.spacedBy(SettingsFeatureAttribute.LicensesDialog.EntrySpacing),
     ) {
-        LicenseEntries.forEach { (name, license) ->
+        SettingsFeatureAttribute.LicensesDialog.LicenseEntries.forEach { (name, license) ->
             Row {
                 Text(
                     text = stringResource(name),
@@ -62,6 +50,6 @@ internal fun LicensesDialogContent() {
             }
         }
     }
-    Spacer(Modifier.height(SectionSpacing))
+    Spacer(Modifier.height(SettingsFeatureAttribute.LicensesDialog.SectionSpacing))
     ZeeHintRow(listOf(zeeBackHint()))
 }

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.TextUnit
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
+import com.zeelauncher.core_designsystem.attr.DesignSystemAttribute
 import com.zeelauncher.core_designsystem.modifier.noRippleClickable
 import com.zeelauncher.core_designsystem.motion.ZeeMotion
 import com.zeelauncher.core_designsystem.sound.tapSound
@@ -36,8 +37,6 @@ import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.core_model.app.AppIcon
 import com.zeelauncher.core_model.app.InstalledApp
-
-private const val TILE_FOCUS_LABEL = "app_grid_tile_focus"
 
 @Immutable
 data class ZeeAppGridSpec(
@@ -109,7 +108,7 @@ private fun ZeeAppTile(
     val focus by animateFloatAsState(
         targetValue = if (selected) ONE_FLOAT else ZERO_FLOAT,
         animationSpec = ZeeMotion.spec(),
-        label = TILE_FOCUS_LABEL,
+        label = DesignSystemAttribute.AppGrid.TILE_FOCUS_LABEL,
     )
     val icon = remember(app.packageName, app.activityName) { AppIcon(app.packageName, app.activityName) }
     val colors = ZeeTheme.colors

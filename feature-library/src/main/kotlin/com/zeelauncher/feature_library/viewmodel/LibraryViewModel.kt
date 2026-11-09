@@ -20,6 +20,7 @@ import com.zeelauncher.core_input.ZeeAction
 import com.zeelauncher.core_input.moveInGrid
 import com.zeelauncher.core_model.game.Game
 import com.zeelauncher.core_model.launch.LaunchResult
+import com.zeelauncher.feature_library.attr.LibraryFeatureAttribute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +33,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-private const val EFFECT_BUFFER_CAPACITY = 8
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
@@ -53,7 +52,9 @@ class LibraryViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LibraryUiState())
     val uiState: StateFlow<LibraryUiState> = _uiState.asStateFlow()
 
-    private val _effects = MutableSharedFlow<LibraryEffect>(extraBufferCapacity = EFFECT_BUFFER_CAPACITY)
+    private val _effects = MutableSharedFlow<LibraryEffect>(
+        extraBufferCapacity = LibraryFeatureAttribute.ViewModel.EFFECT_BUFFER_CAPACITY,
+    )
     val effects: SharedFlow<LibraryEffect> = _effects.asSharedFlow()
 
     private var pendingFocusPackageName: String? = null
@@ -255,7 +256,11 @@ class LibraryViewModel @Inject constructor(
         _uiState.update {
             val dialog = it.importDialog
             if (dialog.apps.isEmpty()) return@update it
-            val index = action.moveInGrid(dialog.selectedIndex, dialog.apps.size, IMPORT_GRID_COLUMNS) ?: return@update it
+            val index = action.moveInGrid(
+                index = dialog.selectedIndex,
+                size = dialog.apps.size,
+                columns = LibraryFeatureAttribute.Import.GRID_COLUMNS,
+            ) ?: return@update it
             it.copy(importDialog = dialog.copy(selectedIndex = index))
         }
     }

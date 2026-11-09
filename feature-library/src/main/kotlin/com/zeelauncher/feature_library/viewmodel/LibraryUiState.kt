@@ -5,10 +5,7 @@ import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_model.app.InstalledApp
 import com.zeelauncher.core_model.game.Game
-
-private const val IMPORT_ITEM_KEY = "import"
-
-internal const val IMPORT_GRID_COLUMNS = 4
+import com.zeelauncher.feature_library.attr.LibraryFeatureAttribute
 
 sealed interface LibraryItem {
     val key: String
@@ -18,7 +15,7 @@ sealed interface LibraryItem {
     }
 
     data object ImportItem : LibraryItem {
-        override val key: String get() = IMPORT_ITEM_KEY
+        override val key: String get() = LibraryFeatureAttribute.UiState.IMPORT_ITEM_KEY
     }
 }
 

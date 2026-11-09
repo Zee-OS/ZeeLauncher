@@ -30,6 +30,7 @@ import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
 import com.zeelauncher.core_common.constant.ZERO_FLOAT
 import com.zeelauncher.core_common.constant.ZERO_LONG
+import com.zeelauncher.core_designsystem.attr.DesignSystemAttribute
 import com.zeelauncher.core_designsystem.icon.ZeeCheckIcon
 import com.zeelauncher.core_designsystem.icon.ZeeCloseIcon
 import com.zeelauncher.core_designsystem.icon.ZeeControllerIcon
@@ -40,9 +41,6 @@ import com.zeelauncher.core_designsystem.theme.Dimen
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import kotlinx.coroutines.delay
-
-private const val TOAST_DURATION_MILLIS = 3_000L
-private const val MAX_VISIBLE_TOASTS = 3
 
 enum class ZeeToastIcon {
     Check,
@@ -72,7 +70,7 @@ class ZeeToastHostState {
 
     fun show(text: String, icon: ZeeToastIcon) {
         val active = items.filterNot { it.isDismissed }
-        if (active.size >= MAX_VISIBLE_TOASTS) active.first().dismiss()
+        if (active.size >= DesignSystemAttribute.Toast.MAX_VISIBLE) active.first().dismiss()
         items.add(ZeeToastItem(id = nextId++, text = text, icon = icon))
     }
 
@@ -98,7 +96,7 @@ fun ZeeToastHost(
 
                 LaunchedEffect(item) {
                     slide.animateTo(ONE_FLOAT, ZeeMotion.spec())
-                    delay(TOAST_DURATION_MILLIS)
+                    delay(DesignSystemAttribute.Toast.DURATION_MILLIS)
                     item.dismiss()
                 }
 

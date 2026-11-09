@@ -10,6 +10,7 @@ import com.zeelauncher.core_input.ZeeAction
 import com.zeelauncher.core_input.moveInGrid
 import com.zeelauncher.core_model.app.InstalledApp
 import com.zeelauncher.core_model.launch.LaunchResult
+import com.zeelauncher.feature_apps.attr.AppsFeatureAttribute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +23,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
-private const val EFFECT_BUFFER_CAPACITY = 4
-
 @HiltViewModel
 class AppsViewModel @Inject constructor(
     observeInstalledAppsUseCase: ObserveInstalledAppsUseCase,
@@ -33,7 +32,9 @@ class AppsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AppsUiState())
     val uiState: StateFlow<AppsUiState> = _uiState.asStateFlow()
 
-    private val _effects = MutableSharedFlow<AppsEffect>(extraBufferCapacity = EFFECT_BUFFER_CAPACITY)
+    private val _effects = MutableSharedFlow<AppsEffect>(
+        extraBufferCapacity = AppsFeatureAttribute.ViewModel.EFFECT_BUFFER_CAPACITY,
+    )
     val effects: SharedFlow<AppsEffect> = _effects.asSharedFlow()
 
     init {
@@ -49,7 +50,11 @@ class AppsViewModel @Inject constructor(
             open()
             return true
         }
-        val index = action.moveInGrid(state.selectedIndex, state.apps.size, APPS_GRID_COLUMNS) ?: return false
+        val index = action.moveInGrid(
+            index = state.selectedIndex,
+            size = state.apps.size,
+            columns = AppsFeatureAttribute.Grid.COLUMNS,
+        ) ?: return false
         _uiState.update { it.copy(selectedIndex = index) }
         return true
     }
