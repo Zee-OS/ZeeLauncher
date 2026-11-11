@@ -23,12 +23,9 @@ internal fun ZeeRootNavHost(homeRequests: Flow<Unit>) {
     }
 
     ObserveZeeActions { action ->
-        if (action == ZeeAction.Back) {
-            if (navController.previousBackStackEntry != null) navController.popBackStack()
-            true
-        } else {
-            false
-        }
+        action == ZeeAction.Back &&
+                navController.previousBackStackEntry != null &&
+                navController.popBackStack()
     }
 
     NavHost(

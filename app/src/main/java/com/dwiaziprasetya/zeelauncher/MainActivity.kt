@@ -43,6 +43,7 @@ import com.zeelauncher.core_input.ZeeAction
 import com.zeelauncher.core_input.ZeeInputDispatcher
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import com.zeelauncher.core_data.usecase.IsDefaultLauncherUseCase
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -55,6 +56,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var observeSoundEnabledUseCase: ObserveSoundEnabledUseCase
+
+    @Inject
+    lateinit var isDefaultLauncherUseCase: IsDefaultLauncherUseCase
 
     private val input = ZeeInputDispatcher()
 
@@ -70,8 +74,9 @@ class MainActivity : ComponentActivity() {
         holdSplashUntilReady(splashScreen)
         enableEdgeToEdge()
         hideSystemBars()
-        onBackPressedDispatcher.addCallback(this) { input.dispatch(ZeeAction.Back) }
-
+        onBackPressedDispatcher.addCallback(this) {
+            if (!input.dispatch(ZeeAction.Back) && !isDefaultLauncherUseCase()) moveTaskToBack(true)
+        }
         val sounds = attachInputSounds(input, observeSoundEnabledUseCase())
         setContent {
             val overlayHost = remember { ZeeOverlayHostState() }
@@ -128,5 +133,10 @@ class MainActivity : ComponentActivity() {
             hide(WindowInsetsCompat.Type.systemBars())
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (intent.hasCategory(Intent.CATEGORY_HOME) && !isDefaultLauncherUseCase()) finishAndRemoveTask()
     }
 }
