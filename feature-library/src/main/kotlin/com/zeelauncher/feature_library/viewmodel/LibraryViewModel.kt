@@ -105,6 +105,12 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
+    fun onSwipe(delta: Int): Boolean {
+        val before = _uiState.value.selectedIndex
+        moveSelection(delta)
+        return _uiState.value.selectedIndex != before
+    }
+
     fun onCardClick(index: Int) {
         if (index == _uiState.value.selectedIndex) {
             confirm()

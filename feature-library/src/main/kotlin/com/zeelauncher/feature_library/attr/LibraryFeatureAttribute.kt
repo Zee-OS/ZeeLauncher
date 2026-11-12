@@ -43,6 +43,9 @@ internal object LibraryFeatureAttribute {
         val CardSmall = Dimen.Dp170
         val CardLarge = Dimen.Dp340
         val CardGap = Dimen.Dp30
+        val SwipeStep = Dimen.Dp200
+        val FlingVelocityPerStep = Dimen.Dp720
+        const val MAX_FLING_STEPS = 5
     }
 
     object Screen {

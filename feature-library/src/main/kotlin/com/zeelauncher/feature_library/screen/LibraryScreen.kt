@@ -60,6 +60,7 @@ internal fun LibraryRoute(
     LibraryScreen(
         uiState = uiState,
         onCardClick = viewModel::onCardClick,
+        onSwipe = viewModel::onSwipe,
         onPlayClick = viewModel::confirm,
         onAppInfoClick = viewModel::onAppInfoClick,
     )
@@ -91,6 +92,7 @@ internal fun LibraryRoute(
 internal fun LibraryScreen(
     uiState: LibraryUiState,
     onCardClick: (Int) -> Unit,
+    onSwipe: (Int) -> Boolean,
     onPlayClick: () -> Unit,
     onAppInfoClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -108,6 +110,7 @@ internal fun LibraryScreen(
             LibraryContent(
                 uiState = state,
                 onCardClick = onCardClick,
+                onSwipe = onSwipe,
                 onPlayClick = onPlayClick,
                 onAppInfoClick = onAppInfoClick,
             )
@@ -119,6 +122,7 @@ internal fun LibraryScreen(
 private fun LibraryContent(
     uiState: LibraryUiState,
     onCardClick: (Int) -> Unit,
+    onSwipe: (Int) -> Boolean,
     onPlayClick: () -> Unit,
     onAppInfoClick: () -> Unit,
 ) {
@@ -132,6 +136,7 @@ private fun LibraryContent(
             items = uiState.items,
             position = position,
             onCardClick = onCardClick,
+            onSwipe = onSwipe,
             modifier = Modifier
                 .weight(ONE_FLOAT)
                 .fillMaxWidth(),
