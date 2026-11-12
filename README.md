@@ -2,4 +2,4 @@
 
 # ZeeLauncher
 
-A console-style game launcher for Android, built for gamepads and touch. Your games sit in a big carousel, every screen works with a controller, and the whole interface is made for landscape. ZeeLauncher is also the default launcher of ZeeOS, an Android-based OS for gaming handhelds.
+A console-style game launcher for Android, built for gamepads and touch. Your games sit in a big carousel, every screen works with a controller, and the whole interface is made for landscape.
