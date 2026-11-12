@@ -6,18 +6,16 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.content.res.Resources
+import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +31,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.zeelauncher.core_common.constant.DASH
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
-import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.locale.AppLanguage
 import com.zeelauncher.core_designsystem.R as DesignR
 import com.zeelauncher.core_designsystem.component.ZeeButtonHint
@@ -45,18 +42,14 @@ import com.zeelauncher.core_designsystem.overlay.isOverlayActive
 import com.zeelauncher.core_designsystem.theme.ZeeDimens
 import com.zeelauncher.core_designsystem.theme.ZeeTheme
 import com.zeelauncher.core_designsystem.toast.LocalZeeToast
-import com.zeelauncher.core_designsystem.toast.ZeeToastHostState
 import com.zeelauncher.core_designsystem.toast.ZeeToastIcon
 import com.zeelauncher.core_input.ObserveZeeActions
-import com.zeelauncher.core_model.library.LibrarySyncResult
 import com.zeelauncher.feature_settings.R
 import com.zeelauncher.feature_settings.attr.SettingsFeatureAttribute
 import com.zeelauncher.feature_settings.component.LicensesDialogContent
 import com.zeelauncher.feature_settings.component.SettingsPanel
-import com.zeelauncher.feature_settings.component.SettingsSidebar
 import com.zeelauncher.feature_settings.viewmodel.SettingsEffect
 import com.zeelauncher.feature_settings.viewmodel.SettingsRow
-import com.zeelauncher.feature_settings.viewmodel.SettingsSection
 import com.zeelauncher.feature_settings.viewmodel.SettingsUiState
 import com.zeelauncher.feature_settings.viewmodel.SettingsViewModel
 
@@ -91,14 +84,17 @@ internal fun SettingsRoute(
                     }
                 }
                 SettingsEffect.Recreate -> context.findActivity()?.recreate()
-                is SettingsEffect.LibraryRescanned -> toast.showRescanResult(effect.result, resources)
+                SettingsEffect.OpenSourceCode -> {
+                    if (!context.openUrl(resources.getString(R.string.settings_source_url))) {
+                        toast.show(resources.getString(R.string.settings_toast_no_browser), ZeeToastIcon.Close)
+                    }
+                }
             }
         }
     }
 
     SettingsScreen(
         uiState = uiState,
-        onSectionClick = viewModel::onSectionClick,
         onRowClick = viewModel::onRowClick,
         onLanguageClick = viewModel::onLanguageClick,
     )
@@ -107,7 +103,7 @@ internal fun SettingsRoute(
         val isActive = isOverlayActive
         ObserveZeeActions { action -> isActive && viewModel.onLicensesAction(action) }
         ZeeModal(onDismiss = viewModel::closeLicenses) {
-            LicensesDialogContent()
+            LicensesDialogContent(onOpenClick = viewModel::openSourceCode)
         }
     }
 }
@@ -115,36 +111,23 @@ internal fun SettingsRoute(
 @Composable
 internal fun SettingsScreen(
     uiState: SettingsUiState,
-    onSectionClick: (SettingsSection) -> Unit,
     onRowClick: (SettingsRow) -> Unit,
     onLanguageClick: (AppLanguage) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.fillMaxSize()) {
-        Row(
+        Box(
             modifier = Modifier
                 .weight(ONE_FLOAT)
                 .fillMaxWidth()
-                .padding(horizontal = ZeeDimens.ScreenPaddingHorizontal)
-                .padding(
-                    top = SettingsFeatureAttribute.Screen.ContentPaddingTop,
-                    bottom = SettingsFeatureAttribute.Screen.ContentPaddingBottom,
-                ),
+                .padding(horizontal = ZeeDimens.ScreenPaddingHorizontal),
+            contentAlignment = Alignment.Center,
         ) {
-            SettingsSidebar(
-                selected = uiState.section,
-                isFocused = !uiState.isPanelFocused,
-                onSectionClick = onSectionClick,
-                modifier = Modifier.width(SettingsFeatureAttribute.Screen.SidebarWidth),
-            )
-            Spacer(Modifier.width(SettingsFeatureAttribute.Screen.ContentSpacing))
             SettingsPanel(
                 state = uiState,
                 onRowClick = onRowClick,
                 onLanguageClick = onLanguageClick,
-                modifier = Modifier
-                    .weight(ONE_FLOAT)
-                    .fillMaxHeight(),
+                modifier = Modifier.fillMaxWidth(SettingsFeatureAttribute.Screen.PANEL_WIDTH_FRACTION),
             )
         }
         Row(
@@ -178,27 +161,15 @@ private fun Context.openHomeSettings() {
     }
 }
 
+private fun Context.openUrl(url: String): Boolean = try {
+    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    true
+} catch (exception: ActivityNotFoundException) {
+    false
+}
+
 private tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null
-}
-
-private fun ZeeToastHostState.showRescanResult(result: LibrarySyncResult, resources: Resources) {
-    if (!result.hasChanges) {
-        show(resources.getString(R.string.settings_toast_library_up_to_date), ZeeToastIcon.Check)
-        return
-    }
-    if (result.addedCount > ZERO) {
-        show(
-            resources.getQuantityString(R.plurals.settings_toast_games_added, result.addedCount, result.addedCount),
-            ZeeToastIcon.Check,
-        )
-    }
-    if (result.removedCount > ZERO) {
-        show(
-            resources.getQuantityString(R.plurals.settings_toast_games_removed, result.removedCount, result.removedCount),
-            ZeeToastIcon.Close,
-        )
-    }
 }

@@ -1,58 +1,29 @@
 <resources>
-    <string name="settings_section_general">GENERAL</string>
-    <string name="settings_section_library" translatable="false">LIBRARY</string>
-    <string name="settings_section_about">ABOUT</string>
-    <string name="settings_chevron" translatable="false">&gt;</string>
-
     <string name="settings_status_on">ON</string>
     <string name="settings_status_off">OFF</string>
 
     <string name="settings_default_launcher_title">Default launcher</string>
-    <string name="settings_default_launcher_subtitle">Use ZeeLauncher as your home screen</string>
     <string name="settings_default_launcher_set">SET DEFAULT</string>
     <string name="settings_default_launcher_change">CHANGE</string>
 
     <string name="settings_language_title">Language</string>
-    <string name="settings_language_subtitle">Language used across ZeeLauncher</string>
     <string name="settings_language_en" translatable="false">EN</string>
     <string name="settings_language_id" translatable="false">ID</string>
 
     <string name="settings_sound_title">Sound effects</string>
-    <string name="settings_sound_subtitle">Play sounds when navigating</string>
-
-    <string name="settings_rescan_title">Rescan games</string>
-    <string name="settings_rescan_subtitle">Look for newly installed games</string>
-    <string name="settings_rescan_action">RESCAN</string>
-    <string name="settings_rescan_running">SCANNING</string>
-
-    <string name="settings_version_title">Version</string>
-    <string name="settings_version_subtitle">Installed ZeeLauncher version</string>
 
     <string name="settings_licenses_title">Open source licenses</string>
-    <string name="settings_licenses_subtitle">Libraries and fonts used in ZeeLauncher</string>
     <string name="settings_licenses_action">VIEW</string>
     <string name="settings_licenses_dialog_title">OPEN SOURCE LICENSES</string>
+    <string name="settings_licenses_dialog_body">ZeeLauncher is open source under the Apache 2.0 license. Source code and the licenses of every library and font used are on GitHub.</string>
 
-    <string name="settings_license_androidx" translatable="false">AndroidX &amp; Jetpack Compose</string>
-    <string name="settings_license_kotlin" translatable="false">Kotlin &amp; kotlinx</string>
-    <string name="settings_license_hilt" translatable="false">Dagger Hilt</string>
-    <string name="settings_license_coil" translatable="false">Coil</string>
-    <string name="settings_license_rajdhani" translatable="false">Rajdhani font</string>
-    <string name="settings_license_apache" translatable="false">APACHE LICENSE 2.0</string>
-    <string name="settings_license_ofl" translatable="false">SIL OPEN FONT LICENSE 1.1</string>
+    <string name="settings_source_label" translatable="false">github.com/Zee-OS/ZeeLauncher</string>
+    <string name="settings_source_url" translatable="false">https://github.com/Zee-OS/ZeeLauncher</string>
 
     <string name="settings_footer_version" translatable="false">ZeeLauncher / v%1$s</string>
     <string name="settings_hint_select" translatable="false">SELECT</string>
+    <string name="settings_hint_open_github" translatable="false">OPEN GITHUB</string>
+    <string name="settings_hint_close" translatable="false">CLOSE</string>
 
-    <string name="settings_toast_library_up_to_date">LIBRARY UP TO DATE</string>
-
-    <plurals name="settings_toast_games_added">
-        <item quantity="one">GAME ADDED</item>
-        <item quantity="other">%d GAMES ADDED</item>
-    </plurals>
-
-    <plurals name="settings_toast_games_removed">
-        <item quantity="one">GAME REMOVED</item>
-        <item quantity="other">%d GAMES REMOVED</item>
-    </plurals>
+    <string name="settings_toast_no_browser">NO BROWSER FOUND</string>
 </resources>

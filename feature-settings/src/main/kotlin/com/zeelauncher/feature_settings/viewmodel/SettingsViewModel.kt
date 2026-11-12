@@ -12,7 +12,6 @@ import com.zeelauncher.core_data.usecase.IsDefaultLauncherUseCase
 import com.zeelauncher.core_data.usecase.ObserveSoundEnabledUseCase
 import com.zeelauncher.core_data.usecase.SetAppLanguageUseCase
 import com.zeelauncher.core_data.usecase.SetSoundEnabledUseCase
-import com.zeelauncher.core_data.usecase.SyncLibraryUseCase
 import com.zeelauncher.core_input.ZeeAction
 import com.zeelauncher.feature_settings.attr.SettingsFeatureAttribute
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +35,6 @@ class SettingsViewModel @Inject constructor(
     private val getAppLanguageUseCase: GetAppLanguageUseCase,
     private val setAppLanguageUseCase: SetAppLanguageUseCase,
     private val isDefaultLauncherUseCase: IsDefaultLauncherUseCase,
-    private val syncLibraryUseCase: SyncLibraryUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -65,51 +63,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onAction(action: ZeeAction): Boolean = when (_uiState.value.focus) {
-        SettingsFocus.Sidebar -> onSidebarAction(action)
-        SettingsFocus.Panel -> onPanelAction(action)
-    }
-
-    fun onLicensesAction(action: ZeeAction): Boolean {
-        if (action == ZeeAction.Back || action == ZeeAction.Confirm) closeLicenses()
-        return true
-    }
-
-    fun onSectionClick(section: SettingsSection) {
-        _uiState.update { it.copy(section = section, focus = SettingsFocus.Sidebar, rowIndex = ZERO) }
-    }
-
-    fun onRowClick(row: SettingsRow) {
-        focusRow(row)
-        activate(row)
-    }
-
-    fun onLanguageClick(language: AppLanguage) {
-        focusRow(SettingsRow.Language)
-        selectLanguage(language)
-    }
-
-    fun closeLicenses() {
-        _uiState.update { it.copy(isLicensesVisible = false) }
-    }
-
-    private fun onSidebarAction(action: ZeeAction): Boolean = when (action) {
-        ZeeAction.Up -> {
-            moveSection(MINUS_ONE)
-            true
-        }
-        ZeeAction.Down -> {
-            moveSection(ONE)
-            true
-        }
-        ZeeAction.Right, ZeeAction.Confirm -> {
-            _uiState.update { it.copy(focus = SettingsFocus.Panel, rowIndex = ZERO) }
-            true
-        }
-        ZeeAction.Left, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.Back, ZeeAction.AppInfo, ZeeAction.Menu, ZeeAction.Search -> false
-    }
-
-    private fun onPanelAction(action: ZeeAction): Boolean {
+    fun onAction(action: ZeeAction): Boolean {
         val state = _uiState.value
         val isLanguageRow = state.selectedRow == SettingsRow.Language
         return when (action) {
@@ -125,22 +79,38 @@ class SettingsViewModel @Inject constructor(
                 activate(state.selectedRow)
                 true
             }
-            ZeeAction.Left -> {
-                val previous = AppLanguage.entries.getOrNull(state.language.ordinal - ONE)
-                if (isLanguageRow && previous != null) selectLanguage(previous) else focusSidebar()
-                true
-            }
-            ZeeAction.Right -> {
-                val next = AppLanguage.entries.getOrNull(state.language.ordinal + ONE)
-                if (isLanguageRow && next != null) selectLanguage(next)
-                true
-            }
-            ZeeAction.Back -> {
-                focusSidebar()
-                true
-            }
-            ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.AppInfo, ZeeAction.Menu, ZeeAction.Search -> false
+            ZeeAction.Left -> isLanguageRow && stepLanguage(MINUS_ONE)
+            ZeeAction.Right -> isLanguageRow && stepLanguage(ONE)
+            ZeeAction.Back, ZeeAction.PreviousTab, ZeeAction.NextTab, ZeeAction.AppInfo, ZeeAction.Menu, ZeeAction.Search -> false
         }
+    }
+
+    fun onLicensesAction(action: ZeeAction): Boolean {
+        when (action) {
+            ZeeAction.Confirm -> openSourceCode()
+            ZeeAction.Back -> closeLicenses()
+            else -> Unit
+        }
+        return true
+    }
+
+    fun onRowClick(row: SettingsRow) {
+        focusRow(row)
+        activate(row)
+    }
+
+    fun onLanguageClick(language: AppLanguage) {
+        focusRow(SettingsRow.Language)
+        selectLanguage(language)
+    }
+
+    fun openSourceCode() {
+        closeLicenses()
+        _effects.tryEmit(SettingsEffect.OpenSourceCode)
+    }
+
+    fun closeLicenses() {
+        _uiState.update { it.copy(isLicensesVisible = false) }
     }
 
     private fun activate(row: SettingsRow) {
@@ -149,10 +119,14 @@ class SettingsViewModel @Inject constructor(
             SettingsRow.DefaultLauncher -> _effects.tryEmit(SettingsEffect.OpenDefaultLauncher(state.isDefaultLauncher))
             SettingsRow.Language -> selectLanguage(AppLanguage.entries[(state.language.ordinal + ONE) % AppLanguage.entries.size])
             SettingsRow.Sound -> viewModelScope.launch { setSoundEnabledUseCase(!state.soundEnabled) }
-            SettingsRow.Rescan -> rescan()
-            SettingsRow.Version -> Unit
             SettingsRow.Licenses -> _uiState.update { it.copy(isLicensesVisible = true) }
         }
+    }
+
+    private fun stepLanguage(delta: Int): Boolean {
+        val target = AppLanguage.entries.getOrNull(_uiState.value.language.ordinal + delta) ?: return false
+        selectLanguage(target)
+        return true
     }
 
     private fun selectLanguage(language: AppLanguage) {
@@ -162,37 +136,13 @@ class SettingsViewModel @Inject constructor(
         if (needsRecreate) _effects.tryEmit(SettingsEffect.Recreate)
     }
 
-    private fun rescan() {
-        if (_uiState.value.isRescanning) return
-        _uiState.update { it.copy(isRescanning = true) }
-        viewModelScope.launch {
-            val result = syncLibraryUseCase()
-            _uiState.update { it.copy(isRescanning = false) }
-            _effects.emit(SettingsEffect.LibraryRescanned(result))
-        }
-    }
-
     private fun focusRow(row: SettingsRow) {
-        _uiState.update {
-            it.copy(focus = SettingsFocus.Panel, rowIndex = it.section.rows.indexOf(row).coerceAtLeast(ZERO))
-        }
-    }
-
-    private fun focusSidebar() {
-        _uiState.update { it.copy(focus = SettingsFocus.Sidebar) }
-    }
-
-    private fun moveSection(delta: Int) {
-        _uiState.update {
-            val sections = SettingsSection.entries
-            val index = (it.section.ordinal + delta).coerceIn(ZERO, sections.lastIndex)
-            it.copy(section = sections[index], rowIndex = ZERO)
-        }
+        _uiState.update { it.copy(rowIndex = row.ordinal) }
     }
 
     private fun moveRow(delta: Int) {
         _uiState.update {
-            it.copy(rowIndex = (it.rowIndex + delta).coerceIn(ZERO, it.section.rows.lastIndex))
+            it.copy(rowIndex = (it.rowIndex + delta).coerceIn(ZERO, SettingsRow.entries.lastIndex))
         }
     }
 }

@@ -1,37 +1,22 @@
 package com.zeelauncher.feature_settings.attr
 
 import com.zeelauncher.core_designsystem.theme.Dimen
-import com.zeelauncher.feature_settings.R
 
 internal object SettingsFeatureAttribute {
 
     object Panel {
-        val PaddingHorizontal = Dimen.Dp40
-        val PaddingVertical = Dimen.Dp34
-        val TitleSpacing = Dimen.Dp16
-        val RowSpacing = Dimen.Dp8
-        val RowPaddingHorizontal = Dimen.Dp20
-        val RowPaddingVertical = Dimen.Dp14
+        val Padding = Dimen.Dp20
+        val RowHeight = Dimen.Dp72
+        val RowPaddingHorizontal = Dimen.Dp24
         val ControlSpacing = Dimen.Dp24
-        val SubtitleSpacing = Dimen.Dp4
-    }
-
-    object Sidebar {
-        val ItemHeight = Dimen.Dp56
-        val ItemSpacing = Dimen.Dp16
+        val DividerThickness = Dimen.Dp2
     }
 
     object LicensesDialog {
         val Width = Dimen.Dp510
-        val EntrySpacing = Dimen.Dp14
-        val SectionSpacing = Dimen.Dp30
-        val LicenseEntries = listOf(
-            R.string.settings_license_androidx to R.string.settings_license_apache,
-            R.string.settings_license_kotlin to R.string.settings_license_apache,
-            R.string.settings_license_hilt to R.string.settings_license_apache,
-            R.string.settings_license_coil to R.string.settings_license_apache,
-            R.string.settings_license_rajdhani to R.string.settings_license_ofl,
-        )
+        val TitleSpacing = Dimen.Dp22
+        val LinkSpacing = Dimen.Dp18
+        val SectionSpacing = Dimen.Dp36
     }
 
     object Controls {
@@ -44,10 +29,7 @@ internal object SettingsFeatureAttribute {
     }
 
     object Screen {
-        val SidebarWidth = Dimen.Dp340
-        val ContentSpacing = Dimen.Dp48
-        val ContentPaddingTop = Dimen.Dp40
-        val ContentPaddingBottom = Dimen.Dp30
+        const val PANEL_WIDTH_FRACTION = 0.6f
     }
 
     object ViewModel {

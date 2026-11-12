@@ -2,7 +2,6 @@ package com.zeelauncher.feature_settings.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,10 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
-import com.zeelauncher.core_common.constant.DASH
 import com.zeelauncher.core_common.constant.ONE
 import com.zeelauncher.core_common.constant.ONE_FLOAT
+import com.zeelauncher.core_common.constant.ZERO
 import com.zeelauncher.core_common.locale.AppLanguage
 import com.zeelauncher.core_designsystem.component.ZeeButton
 import com.zeelauncher.core_designsystem.component.ZeeButtonVariant
@@ -47,37 +45,32 @@ internal fun SettingsPanel(
             .hardShadow(ZeeDimens.ShadowCard, colors.shadow)
             .background(colors.background)
             .border(ZeeDimens.BorderThick, colors.content)
-            .padding(
-                horizontal = SettingsFeatureAttribute.Panel.PaddingHorizontal,
-                vertical = SettingsFeatureAttribute.Panel.PaddingVertical,
-            ),
+            .padding(SettingsFeatureAttribute.Panel.Padding),
     ) {
-        Text(
-            text = stringResource(state.section.labelRes()),
-            style = ZeeTheme.typography.headline,
-            color = colors.title,
-            maxLines = ONE,
-        )
-        Spacer(Modifier.height(SettingsFeatureAttribute.Panel.TitleSpacing))
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(ZeeDimens.BorderThick)
-                .background(colors.content),
-        )
-        Spacer(Modifier.height(SettingsFeatureAttribute.Panel.TitleSpacing))
-        Column(verticalArrangement = Arrangement.spacedBy(SettingsFeatureAttribute.Panel.RowSpacing)) {
-            state.section.rows.forEachIndexed { index, row ->
-                SettingsRowItem(
-                    row = row,
-                    state = state,
-                    isFocused = state.isPanelFocused && index == state.rowIndex,
-                    onClick = { onRowClick(row) },
-                    onLanguageClick = onLanguageClick,
-                )
+        SettingsRow.entries.forEachIndexed { index, row ->
+            if (index > ZERO) {
+                RowDivider(visible = index != state.rowIndex && index - ONE != state.rowIndex)
             }
+            SettingsRowItem(
+                row = row,
+                state = state,
+                isFocused = index == state.rowIndex,
+                onClick = { onRowClick(row) },
+                onLanguageClick = onLanguageClick,
+            )
         }
     }
+}
+
+@Composable
+private fun RowDivider(visible: Boolean) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = SettingsFeatureAttribute.Panel.RowPaddingHorizontal)
+            .height(SettingsFeatureAttribute.Panel.DividerThickness)
+            .background(if (visible) ZeeTheme.colors.shadow else Color.Transparent),
+    )
 }
 
 @Composable
@@ -92,30 +85,21 @@ private fun SettingsRowItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .border(ZeeDimens.BorderThin, if (isFocused) colors.accent else Color.Transparent)
+            .height(SettingsFeatureAttribute.Panel.RowHeight)
+            .hardShadow(ZeeDimens.ShadowMedium, if (isFocused) colors.accent else Color.Transparent)
+            .background(colors.background)
+            .border(ZeeDimens.BorderThin, if (isFocused) colors.content else Color.Transparent)
             .noRippleClickable(onClick)
-            .padding(
-                horizontal = SettingsFeatureAttribute.Panel.RowPaddingHorizontal,
-                vertical = SettingsFeatureAttribute.Panel.RowPaddingVertical,
-            ),
+            .padding(horizontal = SettingsFeatureAttribute.Panel.RowPaddingHorizontal),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(Modifier.weight(ONE_FLOAT)) {
-            Text(
-                text = stringResource(row.titleRes()),
-                style = ZeeTheme.typography.status.copy(fontSize = TextDimen.Sp22),
-                color = if (isFocused) colors.accent else colors.title,
-                maxLines = ONE,
-            )
-            Spacer(Modifier.height(SettingsFeatureAttribute.Panel.SubtitleSpacing))
-            Text(
-                text = stringResource(row.subtitleRes()),
-                style = ZeeTheme.typography.body,
-                color = colors.contentSecondary,
-                maxLines = ONE,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
+        Text(
+            text = stringResource(row.titleRes()),
+            style = ZeeTheme.typography.status.copy(fontSize = TextDimen.Sp22),
+            color = colors.title,
+            maxLines = ONE,
+            modifier = Modifier.weight(ONE_FLOAT),
+        )
         Spacer(Modifier.width(SettingsFeatureAttribute.Panel.ControlSpacing))
         RowControl(row = row, state = state, onClick = onClick, onLanguageClick = onLanguageClick)
     }
@@ -147,17 +131,6 @@ private fun RowControl(
             onSelect = onLanguageClick,
         )
         SettingsRow.Sound -> SettingsToggle(checked = state.soundEnabled, onClick = onClick)
-        SettingsRow.Rescan -> ZeeButton(
-            label = stringResource(if (state.isRescanning) R.string.settings_rescan_running else R.string.settings_rescan_action),
-            onClick = onClick,
-            variant = ZeeButtonVariant.Secondary,
-        )
-        SettingsRow.Version -> Text(
-            text = state.versionName?.uppercase() ?: DASH,
-            style = ZeeTheme.typography.button,
-            color = ZeeTheme.colors.title,
-            maxLines = ONE,
-        )
         SettingsRow.Licenses -> ZeeButton(
             label = stringResource(R.string.settings_licenses_action),
             onClick = onClick,
@@ -170,18 +143,7 @@ private fun SettingsRow.titleRes(): Int = when (this) {
     SettingsRow.DefaultLauncher -> R.string.settings_default_launcher_title
     SettingsRow.Language -> R.string.settings_language_title
     SettingsRow.Sound -> R.string.settings_sound_title
-    SettingsRow.Rescan -> R.string.settings_rescan_title
-    SettingsRow.Version -> R.string.settings_version_title
     SettingsRow.Licenses -> R.string.settings_licenses_title
-}
-
-private fun SettingsRow.subtitleRes(): Int = when (this) {
-    SettingsRow.DefaultLauncher -> R.string.settings_default_launcher_subtitle
-    SettingsRow.Language -> R.string.settings_language_subtitle
-    SettingsRow.Sound -> R.string.settings_sound_subtitle
-    SettingsRow.Rescan -> R.string.settings_rescan_subtitle
-    SettingsRow.Version -> R.string.settings_version_subtitle
-    SettingsRow.Licenses -> R.string.settings_licenses_subtitle
 }
 
 private fun AppLanguage.labelRes(): Int = when (this) {
