@@ -35,10 +35,15 @@ internal class AppIconRenderer @Inject constructor(
         val iconSize = ScannerAttribute.IconRenderer.ICON_SIZE_PX
         val bitmap = createBitmap(iconSize, iconSize)
         val canvas = Canvas(bitmap)
-        val layers = if (this is AdaptiveIconDrawable) listOfNotNull(background, foreground) else listOf(this)
-        layers.forEach { layer ->
-            layer.setBounds(ZERO, ZERO, iconSize, iconSize)
-            layer.draw(canvas)
+        if (this is AdaptiveIconDrawable) {
+            val inset = (iconSize * AdaptiveIconDrawable.getExtraInsetFraction()).toInt()
+            listOfNotNull(background, foreground).forEach { layer ->
+                layer.setBounds(-inset, -inset, iconSize + inset, iconSize + inset)
+                layer.draw(canvas)
+            }
+        } else {
+            setBounds(ZERO, ZERO, iconSize, iconSize)
+            draw(canvas)
         }
         return bitmap
     }

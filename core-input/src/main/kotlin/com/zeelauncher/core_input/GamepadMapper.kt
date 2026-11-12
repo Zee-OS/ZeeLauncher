@@ -9,13 +9,13 @@ object GamepadMapper {
         KeyEvent.KEYCODE_DPAD_RIGHT -> ZeeAction.Right
         KeyEvent.KEYCODE_DPAD_UP -> ZeeAction.Up
         KeyEvent.KEYCODE_DPAD_DOWN -> ZeeAction.Down
-        KeyEvent.KEYCODE_BUTTON_L1, KeyEvent.KEYCODE_Q -> ZeeAction.PreviousTab
-        KeyEvent.KEYCODE_BUTTON_R1, KeyEvent.KEYCODE_E -> ZeeAction.NextTab
-        KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DPAD_CENTER -> ZeeAction.Confirm
-        KeyEvent.KEYCODE_BUTTON_B, KeyEvent.KEYCODE_ESCAPE -> ZeeAction.Back
-        KeyEvent.KEYCODE_BUTTON_X, KeyEvent.KEYCODE_X -> ZeeAction.AppInfo
-        KeyEvent.KEYCODE_BUTTON_START, KeyEvent.KEYCODE_MENU, KeyEvent.KEYCODE_M -> ZeeAction.Menu
-        KeyEvent.KEYCODE_BUTTON_Y, KeyEvent.KEYCODE_Y -> ZeeAction.Search
+        KeyEvent.KEYCODE_BUTTON_L1 -> ZeeAction.PreviousTab
+        KeyEvent.KEYCODE_BUTTON_R1 -> ZeeAction.NextTab
+        KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_DPAD_CENTER -> ZeeAction.Confirm
+        KeyEvent.KEYCODE_BUTTON_B -> ZeeAction.Back
+        KeyEvent.KEYCODE_BUTTON_X -> ZeeAction.AppInfo
+        KeyEvent.KEYCODE_BUTTON_START -> ZeeAction.Menu
+        KeyEvent.KEYCODE_BUTTON_Y -> ZeeAction.Search
         else -> null
     }
 }
